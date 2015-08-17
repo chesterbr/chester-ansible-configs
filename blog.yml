@@ -1,0 +1,16 @@
+---
+- hosts: blog
+  pre_tasks:
+  - name: Ensure we have latest packages
+    sudo: yes
+    apt: update_cache=yes cache_valid_time=3600
+
+  tasks:
+  - name: Install prereq packages
+    apt: name={{ item }} state=installed
+    sudo: yes
+    with_items:
+      - nginx
+      - git
+      - rbenv
+

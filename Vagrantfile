@@ -69,5 +69,10 @@ Vagrant.configure(2) do |config|
   #   sudo apt-get install -y apache2
   # SHELL
 
+  config.vm.provision "ansible" do |ansible|
+    ansible.playbook= "blog.yml"
+    # Run commands as root
+    ansible.sudo = true
+  end
 
 end
