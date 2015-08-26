@@ -1,2 +1,4 @@
-# From Ansible Galaxy, rbenv
+# From Ansible Galaxy
 - src: znzj.rbenv
+- src: geerlingguy.nginx
+- src: geerlingguy.security

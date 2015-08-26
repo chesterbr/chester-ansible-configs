@@ -1,0 +1,9 @@
+# Creates the user that will handle daily operations.
+---
+- name: Create admin user
+  user: name={{ admin_user }} shell=/bin/bash
+
+- name: Ensure admin user can log in
+  authorized_key: user={{ admin_user }} key={{ admin_user_key }}
+
+

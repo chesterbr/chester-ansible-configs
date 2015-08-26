@@ -1,0 +1,9 @@
+# These are the initial provisioning tasks. They are separated from the
+# rest so we can run them as root/vagrant/whichver user is provided by the
+# hosting facility.
+---
+- hosts: all
+
+  roles:
+    - role: user_setup
+    - role: geerlingguy.security

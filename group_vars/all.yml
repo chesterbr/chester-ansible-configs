@@ -1,0 +1,13 @@
+---
+# This is the user given by the provider upon initial setup
+# (used only to set up the admin user)
+initial_user: vagrant
+
+# This user will run administrative tasks (and also host
+# support files if we deem so)
+admin_user: chester
+admin_user_key: https://github.com/chesterbr.keys
+
+# geerlingguy.security options
+security_sudoers_passwordless: "{{ admin_user }}"
+security_autoupdate_enabled: true
