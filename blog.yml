@@ -1,16 +1,47 @@
 ---
-- hosts: blog
-  pre_tasks:
-  - name: Ensure we have latest packages
-    sudo: yes
-    apt: update_cache=yes cache_valid_time=3600
+- hosts: all
+  remote_user: "{{ admin_user }}"
 
   tasks:
-  - name: Install prereq packages
-    apt: name={{ item }} state=installed
-    sudo: yes
-    with_items:
-      - nginx
-      - git
-      - rbenv
+    - name: Install prereq packages
+      apt: name={{ item }} state=installed
+      sudo: yes
+      with_items:
+        - git
+
+    - name: Ensure blog repository is at latest version
+      git: repo=git@github.com:chesterbr/octopress.git
+           accept_hostkey=true
+           dest={{ blog_checkout_dir }}
+           version=master
+
+
+
+  # pre_tasks:
+  #   - name: Ensure we have the latest packages
+  #     sudo: yes
+  #     apt: update_cache=yes cache_valid_time=3600
+
+  # roles:
+  #   - { role: user_setup, remote_user: {{ initial_user }} }
+  #   - { role: geerlingguy.security, remote_user: {{ initial_user }} }
+    # - role: blog
+    # - role: geerlingguy.nginx
+    # - role: znzj.rbenv
+
+  # tasks:
+
+    # - name: Install prereq packages
+    #   apt: name={{ item }} state=installed
+    #   sudo: yes
+    #   with_items:
+    #     - git
+    #     # - rbenv
+
+
+
+
+    # - name: Ensure blog is at latest version
+    #   git: git@github.com:chesterbr/octopress.git
+    #   dest:
 
