@@ -2,46 +2,103 @@
 - hosts: all
   remote_user: "{{ admin_user }}"
 
+  # SETUP
+
+  roles:
+    - role: zzet.rbenv
+      rbenv:
+        env: user
+        version: v0.4.0
+        ruby_version: 2.2.2
+      rbenv_users:
+        - "{{ admin_user }}"
+    - role: bennojoy.nginx
+      sudo: yes
+      nginx_sites:
+        - server:
+            file_name: chester.me
+            root: "{{ blog_public_dir }}"
+            server_name: dev.chester.me chester.me www.chester.me m.chester.me
+
   tasks:
+    - name: Add legacy redirects to blog configuration
+      sudo: yes
+      lineinfile: dest="/etc/nginx/sites-available/chester.me" line="{{ item }}" insertafter="^ *server_name.*chester.me"
+      notify:
+        - reload nginx
+      with_items:
+        - location ~ ^/m/(.*)$ { rewrite ^(.*)$ http://m.chester.me/$1 redirect; }
+        - location ~ ^/200(.)(..)\.html$ { rewrite ^(.*)$ /archives/200$1/$2/ redirect; }
+        - location ~ ^/micros.html?$ { rewrite ^(.*)$ /micros redirect; }
+        - location ~ ^/software.html?$ { rewrite ^(.*)$ /archives/category/portfolio redirect; }
+        - location ~ ^/programas.html?$ { rewrite ^(.*)$ /archives/category/portfolio redirect; }
+        - location ~ ^/estadio.html?$ { rewrite ^(.*)$ /estadio redirect; }
+        - location ~ ^/micros.antigos.html?$ { rewrite ^(.*)$ /micros_antigos redirect; }
+        - location ~ ^/mac512.html?$ { rewrite ^(.*)$ /mac512 redirect; }
+        - location ~ ^/ignition.html?$ { rewrite ^(.*)$ /ignition redirect; }
+        - location ~ ^/iigs.html?$ { rewrite ^(.*)$ /iigs redirect; }
+        - location ~ ^/spectrumplus2.html?$ { rewrite ^(.*)$ /spectrumplus2 redirect; }
+        - location ~ ^/tk85.html?$ { rewrite ^(.*)$ /tk85 redirect; }
+        - location ~ ^/eyetoy.html?$ { rewrite ^(.*)$ /eyetoy redirect; }
+        - location ~ ^/gibis.html?$ { rewrite ^(.*)$ /gibis redirect; }
+        - location ~ ^/pinos.html?$ { rewrite ^(.*)$ /pinos redirect; }
+        - location ~ ^/placas.html?$ { rewrite ^(.*)$ /placas redirect; }
+        - location ~ ^/tapete.html?$ { rewrite ^(.*)$ /tapete redirect; }
+        - location ~ ^/mrtversusitconsulting.html?$ { rewrite ^(.*)$ /mrtversusitconsulting redirect; }
+        - location ~ ^/archives/category/software/?$ { rewrite ^(.*)$ /archives/category/portfolio redirect; }
+        - location ~ ^/smsdenuncia/?$ { rewrite ^(.*)$ /smsdenuncia/SMS-Denuncia.jad redirect; }
+        - location /archives/2009/04/tweet_xkcd_bookmarklet { rewrite ^(.*)$ /archives/2009/04/tweet_xkcd_bookmarklet.html redirect; }
+        - location /minitruco { rewrite ^(.*)$ /archives/2006/01/mt.html redirect; }
+        - location /miniTruco { rewrite ^(.*)$ /archives/2006/01/mt.html redirect; }
+        - location /minitruco_en { rewrite ^(.*)$ /archives/2007/12/minitruco_free.html redirect; }
+        - location /curriculum.pdf { rewrite ^(.*)$ http://www.linkedin.com/in/chesterbr redirect; }
+        - location /resume.pdf { rewrite ^(.*)$ http://www.linkedin.com/in/chesterbr redirect; }
+        - location /resume/? { rewrite ^(.*)$ http://www.linkedin.com/in/chesterbr redirect; }
+
+    - name: Remove default nginx site
+      sudo: yes
+      file: path=/etc/nginx/{{ item }}/default state=absent
+      with_items:
+        - sites-available
+        - sites-enabled
+      notify:
+        - reload nginx
+
     - name: Install prereq packages
       apt: name={{ item }} state=installed
       sudo: yes
       with_items:
         - git
 
+    - name: Install a known bundler (so it manages other dependencies)
+      command: bash -lc "cd {{ blog_checkout_dir }}; gem install bundler --version 1.10.5"
+
+  # PUBLISH
     - name: Ensure blog repository is at latest version
       git: repo=git@github.com:chesterbr/octopress.git
            accept_hostkey=true
            dest={{ blog_checkout_dir }}
            version=master
+      register: blog_git_clone
+      tags:
+        - publish_blog
 
+    - name: Ensure we have all gem dependencies for octopress
+      command: bash -lc "cd {{ blog_checkout_dir }}; bundle install"
+      tags:
+        - publish_blog
 
+    - name: Rebuild the blog
+      command: bash -lc "cd {{ blog_checkout_dir }}; bundle exec rake generate"
+      tags:
+        - publish
+      when: blog_git_clone.changed
+      tags:
+        - publish_blog
 
-  # pre_tasks:
-  #   - name: Ensure we have the latest packages
-  #     sudo: yes
-  #     apt: update_cache=yes cache_valid_time=3600
-
-  # roles:
-  #   - { role: user_setup, remote_user: {{ initial_user }} }
-  #   - { role: geerlingguy.security, remote_user: {{ initial_user }} }
-    # - role: blog
-    # - role: geerlingguy.nginx
-    # - role: znzj.rbenv
-
-  # tasks:
-
-    # - name: Install prereq packages
-    #   apt: name={{ item }} state=installed
-    #   sudo: yes
-    #   with_items:
-    #     - git
-    #     # - rbenv
-
-
-
-
-    # - name: Ensure blog is at latest version
-    #   git: git@github.com:chesterbr/octopress.git
-    #   dest:
-
+    - name: Update public dir with rebuilt files
+      command: "rsync --archive --delete {{ blog_checkout_dir }}/public/ {{ blog_public_dir }}"
+      tags:
+        - publish_blog
+      notify:
+        - reload nginx

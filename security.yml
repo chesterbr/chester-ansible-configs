@@ -7,3 +7,9 @@
   roles:
     - role: user_setup
     - role: geerlingguy.security
+
+  tasks:
+    - ufw: rule=allow port=22
+    - ufw: rule=allow port=80
+    - ufw: rule=allow port=6912
+    - ufw: state=enabled policy=reject

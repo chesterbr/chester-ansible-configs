@@ -13,4 +13,5 @@ security_sudoers_passwordless: "{{ admin_user }}"
 security_autoupdate_enabled: true
 
 # Blog options
-blog_checkout_dir: /home/chester/chester.me
+blog_checkout_dir: /home/chester/chester.me/source
+blog_public_dir: /home/chester/chester.me/www
