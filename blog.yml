@@ -16,9 +16,18 @@
       sudo: yes
       nginx_sites:
         - server:
+            listen: 80 default_server
+            file_name: default
+            server_name: _
+            return: 444
+        - server:
             file_name: chester.me
             root: "{{ blog_public_dir }}"
-            server_name: dev.chester.me chester.me www.chester.me m.chester.me
+            server_name: chester.me dev.chester.me
+        - server:
+            file_name: redirects.chester.me
+            server_name: www.chester.me m.chester.me www.chester.me chester.blog.br www.chester.blog.br
+            return: 301 $scheme://chester.me$request_uri
 
   tasks:
     - name: Add legacy redirects to blog configuration
@@ -54,15 +63,6 @@
         - location /curriculum.pdf { rewrite ^(.*)$ http://www.linkedin.com/in/chesterbr redirect; }
         - location /resume.pdf { rewrite ^(.*)$ http://www.linkedin.com/in/chesterbr redirect; }
         - location /resume/? { rewrite ^(.*)$ http://www.linkedin.com/in/chesterbr redirect; }
-
-    - name: Remove default nginx site
-      sudo: yes
-      file: path=/etc/nginx/{{ item }}/default state=absent
-      with_items:
-        - sites-available
-        - sites-enabled
-      notify:
-        - reload nginx
 
     - name: Install prereq packages
       apt: name={{ item }} state=installed
