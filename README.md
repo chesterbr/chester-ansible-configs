@@ -1,6 +1,6 @@
 # chester-ansible-configs
 
-This project contains the configuration for my personal projects (which I automated in an effort to further explore [Ansible][7], Vagrant[12] and related tools), and published because:
+This project contains the configuration for my personal projects (which I automated in an effort to further explore [Ansible][7], [Vagrant][12] and related tools), and published because:
 
 - Ansible exemples may be useful to someone else (despite being very specific to my stuff);
 - It keeps me honest (makes me write scripts that don't suck much, forces me not to have plaintext secrets, exposes security flaws, etc.);
