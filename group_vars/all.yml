@@ -1,8 +1,4 @@
 ---
-# This is the user given by the provider upon initial setup
-# (used only to set up the admin user)
-initial_user: vagrant
-
 # This user will run administrative tasks (and also host
 # support files if we deem so)
 admin_user: chester
