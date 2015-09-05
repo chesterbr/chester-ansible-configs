@@ -1,3 +1,10 @@
+# The playbook is idempotent(*), although it takes some time to check
+# things. If you just want to publish the latest master of the blog,
+# use the publish_blog tag
+#
+# (*) It *does* rebuild the nginx config, but does so without affecting
+#     the site. I may poke into bennojoy.nginx or even provide my own
+#     role to avoid that in the future.
 ---
 - hosts: all
   remote_user: "{{ admin_user }}"
@@ -79,7 +86,6 @@
            accept_hostkey=true
            dest={{ blog_checkout_dir }}
            version=master
-      register: blog_git_clone
       tags:
         - publish_blog
 
@@ -92,7 +98,6 @@
       command: bash -lc "cd {{ blog_checkout_dir }}; bundle exec rake generate"
       tags:
         - publish
-      when: blog_git_clone.changed
       tags:
         - publish_blog
 
