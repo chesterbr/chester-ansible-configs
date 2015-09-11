@@ -9,32 +9,13 @@
 - hosts: all
   remote_user: "{{ admin_user }}"
 
-  # SETUP
+# SETUP
 
   roles:
-    - role: zzet.rbenv
-      rbenv:
-        env: user
-        version: v0.4.0
-        ruby_version: 2.2.2
-      rbenv_users:
-        - "{{ admin_user }}"
-    - role: bennojoy.nginx
-      sudo: yes
-      nginx_sites:
-        - server:
-            listen: 80 default_server
-            file_name: default
-            server_name: _
-            return: 444
-        - server:
-            file_name: chester.me
-            root: "{{ blog_public_dir }}"
-            server_name: chester.me dev.chester.me
-        - server:
-            file_name: redirects.chester.me
-            server_name: www.chester.me m.chester.me www.chester.me chester.blog.br www.chester.blog.br
-            return: 301 $scheme://chester.me$request_uri
+    - role: chesterbr.nginx
+    - role: chesterbr.rbenv
+      ruby_version: 2.2.2
+      rbenv_user: "{{ admin_user }}"
 
   tasks:
     - name: Add legacy redirects to blog configuration
@@ -77,10 +58,8 @@
       with_items:
         - git
 
-    - name: Install a known bundler (so it manages other dependencies)
-      command: bash -lc "cd {{ blog_checkout_dir }}; gem install bundler --version 1.10.5"
+# PUBLISH
 
-  # PUBLISH
     - name: Ensure blog repository is at latest version
       git: repo=git@github.com:chesterbr/octopress.git
            accept_hostkey=true
@@ -96,8 +75,6 @@
 
     - name: Rebuild the blog
       command: bash -lc "cd {{ blog_checkout_dir }}; bundle exec rake generate"
-      tags:
-        - publish
       tags:
         - publish_blog
 

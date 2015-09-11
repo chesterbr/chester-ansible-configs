@@ -1,0 +1,19 @@
+# Basic nginx configuration: disable default site, add chester.me and redirects
+---
+dependencies:
+  - role: bennojoy.nginx
+    sudo: yes
+    nginx_sites:
+      - server:
+          listen: 80 default_server
+          file_name: default
+          server_name: _
+          return: 444
+      - server:
+          file_name: chester.me
+          root: "{{ blog_public_dir }}"
+          server_name: chester.me dev.chester.me
+      - server:
+          file_name: redirects.chester.me
+          server_name: www.chester.me m.chester.me www.chester.me chester.blog.br www.chester.blog.br
+          return: 301 $scheme://chester.me$request_uri
