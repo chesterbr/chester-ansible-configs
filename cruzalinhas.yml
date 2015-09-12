@@ -1,0 +1,75 @@
+---
+- hosts: all
+  remote_user: "{{ admin_user }}"
+
+  environment:
+    RAILS_ENV: production
+
+  roles:
+    - role: chesterbr.nginx
+      tags: nginx_install
+    - role: chesterbr.rbenv
+      ruby_version: 2.1.2
+      rbenv_user: "{{ admin_user }}"
+    - role: chesterbr.vault
+      tags:
+        - install_sptrans_script
+
+  tasks:
+    - name: Install prereq packages
+      apt: name={{ item }} state=installed
+      sudo: yes
+      with_items:
+        - git
+        - libsqlite3-dev
+        - xvfb
+        - firefox
+        - python-pip
+        - openjdk-7-jdk
+        - nodejs
+        - makepasswd
+      tags:
+        - cruzalinhas_deploy
+
+    - name: Ensure code repository is at latest version
+      git: repo=git@github.com:chesterbr/cruzalinhas.git
+           accept_hostkey=true
+           dest={{ cruzalinhas_checkout_dir }}
+           version=master
+
+    - name: Ensure we have all gem dependencies for cruzalinhas
+      command: bash -lc "cd {{ cruzalinhas_checkout_dir }}; bundle install"
+
+    - name: Configure a keybase for cookie signing
+      lineinfile: dest=~/.profile line="export SECRET_KEY_BASE={{ cruzalinhas_secret_key_base }}" regexp="^export SECRET_KEY_BASE"
+      tags:
+        - cruzalinhas_deploy
+
+    - name: Install Selenium bindings for Python and headless display utility
+      pip: name={{ item }}
+      sudo: yes
+      with_items:
+        - selenium
+        - pyvirtualdisplay
+
+    - name: Install sptrans data download script
+      template: src=templates/download_sptrans_gtfs.py.j2 dest={{ cruzalinhas_download_sptrans_script }} owner={{ admin_user }}
+      tags:
+        - install_sptrans_script
+
+    - name: Download latest sptrans data
+      command: bash -lc "python {{ cruzalinhas_download_sptrans_script }}"
+      tags:
+        - update_sptrans_data
+
+    - name: Update SPTrans data
+      command: bash -lc "cd {{ cruzalinhas_checkout_dir }}; bundle exec rake sptrans:import"
+      tags:
+        - update_sptrans_data
+
+# TODO for going live:
+# config startup of bundle exec rails server (supervisor?)
+# test it all again
+# run on production
+# THEN:
+# config crontab with download & update sptrans

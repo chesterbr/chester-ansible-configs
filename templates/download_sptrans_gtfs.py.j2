@@ -1,0 +1,58 @@
+import sys, os, glob, time
+from selenium import webdriver
+
+# We'll try to run Firefox in headless mode (no X-Window display), which
+# requires xvfb and pyvirtualdisplay to be installed (apt/yum and pip,
+# respectively). If we don't have them, run the normal browser mode.
+try:
+  from pyvirtualdisplay import Display
+  display = Display(visible=0, size=(800, 600))
+  display.start()
+except ImportError:
+  sys.stderr.write('Warning: pyvirtualdisplay did not load, running non-headless...')
+
+# Configure with your username/password. Download dir should be exclusive
+# (see assumptions below) and gtfs_filename should be absolute.
+username = '{{ sptrans_username }}'
+password = '{{ sptrans_password }}'
+download_dir = '{{ sptrans_download_dir }}'
+gtfs_filename = '{{ sptrans_gtfs_filename}}'
+
+# Setup directories and clean up previous attempts
+temp_file_mask = os.path.join(download_dir, username + '*part')
+if not os.path.exists(download_dir):
+  os.makedirs(download_dir)
+for f in glob.glob(temp_file_mask): os.remove(f)
+
+# Dowload without any prompt (http://stackoverflow.com/a/18440478/64635)
+profile = webdriver.FirefoxProfile()
+profile.set_preference('browser.download.folderList', 2) # custom location
+profile.set_preference('browser.download.manager.showWhenStarting', False)
+profile.set_preference('browser.download.dir', download_dir)
+profile.set_preference('browser.helperApps.neverAsk.saveToDisk', 'application/octet-stream')
+
+# Open the page, fill in the login form and navigate to the download
+driver = webdriver.Firefox(profile)
+try:
+  driver.get('http://www.sptrans.com.br/desenvolvedores/Default.aspx')
+
+  driver.find_element_by_id('devPlaceUserName').send_keys(username)
+  driver.find_element_by_id('devPlaceUserPass').send_keys(password)
+  driver.find_element_by_id('btnDevPlaceLogin').click()
+
+  driver.find_element_by_id('lnkGoToGTFS').click()
+
+  driver.find_element_by_id('btDownloadGTFS').click()
+
+  # Wait until the file is downloaded
+  while True:
+    time.sleep(1)
+    if not glob.glob(temp_file_mask):
+      break
+
+  # Name it accordingly (we assume it's the most recent file on the d/l dir)
+  given_filename = max(glob.glob(os.path.join(download_dir, '*')), key=os.path.getctime)
+  os.rename(given_filename, gtfs_filename)
+
+finally:
+  driver.quit()
