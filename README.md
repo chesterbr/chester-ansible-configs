@@ -18,7 +18,7 @@ If you want to learn Ansible, I strongly recommend [Jeff Geerling][11]'s [Ansibl
 
 My [personal blog][4], currently based on a [forked Octopress 2.x][5].
 
-### cruzalinhas.com [WIP]
+### cruzalinhas.com
 
 An app that allows quickly finding public transportation routes in São Paulo. See [source code][1] or [website][3] for details. It shares she same nginx with the blog above.
 
