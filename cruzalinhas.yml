@@ -2,18 +2,17 @@
 - hosts: all
   remote_user: "{{ admin_user }}"
 
-  environment:
-    RAILS_ENV: production
+  handlers:
+    - name: reload supervisor
+      shell: "supervisorctl reload"
+      sudo: yes
 
   roles:
     - role: chesterbr.nginx
-      tags: nginx_install
     - role: chesterbr.rbenv
       ruby_version: 2.1.2
       rbenv_user: "{{ admin_user }}"
     - role: chesterbr.vault
-      tags:
-        - install_sptrans_script
 
   tasks:
     - name: Install prereq packages
@@ -28,8 +27,7 @@
         - openjdk-7-jdk
         - nodejs
         - makepasswd
-      tags:
-        - cruzalinhas_deploy
+        - supervisor
 
     - name: Ensure code repository is at latest version
       git: repo=git@github.com:chesterbr/cruzalinhas.git
@@ -37,13 +35,21 @@
            dest={{ cruzalinhas_checkout_dir }}
            version=master
 
-    - name: Ensure we have all gem dependencies for cruzalinhas
-      command: bash -lc "cd {{ cruzalinhas_checkout_dir }}; bundle install"
+    - name: Ensure we're always in production rails environment
+      lineinfile: dest=~/.profile line="export RAILS_ENV=production" regexp="^export RAILS_ENV"
 
     - name: Configure a keybase for cookie signing
       lineinfile: dest=~/.profile line="export SECRET_KEY_BASE={{ cruzalinhas_secret_key_base }}" regexp="^export SECRET_KEY_BASE"
-      tags:
-        - cruzalinhas_deploy
+
+    - name: Ensure we have all gem dependencies for cruzalinhas
+      command: bash -lc "cd {{ cruzalinhas_checkout_dir }}; bundle install"
+      register: bundler
+      changed_when: '"Installing" in bundler.stdout'
+
+    - name: Configures cruzalinhas back-end to run under supervisor (from source dir)
+      template: src=templates/cruzalinhas.conf.supervisor.j2 dest=/etc/supervisor/conf.d/cruzalinhas.conf
+      sudo: yes
+      notify: reload supervisor
 
     - name: Install Selenium bindings for Python and headless display utility
       pip: name={{ item }}
@@ -54,8 +60,6 @@
 
     - name: Install sptrans data download script
       template: src=templates/download_sptrans_gtfs.py.j2 dest={{ cruzalinhas_download_sptrans_script }} owner={{ admin_user }}
-      tags:
-        - install_sptrans_script
 
     - name: Download latest sptrans data
       command: bash -lc "python {{ cruzalinhas_download_sptrans_script }}"
@@ -68,7 +72,6 @@
         - update_sptrans_data
 
 # TODO for going live:
-# config startup of bundle exec rails server (supervisor?)
 # test it all again
 # run on production
 # THEN:
