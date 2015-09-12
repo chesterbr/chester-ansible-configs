@@ -4,7 +4,7 @@
 
   handlers:
     - name: reload supervisor
-      shell: "supervisorctl reload"
+      shell: "service supervisor restart; supervisorctl reload"
       sudo: yes
 
   roles:
