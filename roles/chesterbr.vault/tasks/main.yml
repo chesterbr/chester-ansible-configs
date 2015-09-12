@@ -1,0 +1,8 @@
+# This could be done automatically by naming the vault "main.yml", but we
+# want to only require the password if the role is actually required
+# (tags or conditions)
+---
+- name: Opens the vault
+  include_vars: vault.yml
+
+
