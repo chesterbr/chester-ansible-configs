@@ -1,0 +1,7 @@
+---
+- name: Add cruzalinhas upstream to server config
+  lineinfile: dest=/etc/nginx/sites-enabled/cruzalinhas.com insertbefore="BOF" line="upstream cruzalinhas_rails { server 127.0.0.1:3000; }"
+  sudo: yes
+
+- name: Refresh nginx config
+  service: name=nginx state=reloaded

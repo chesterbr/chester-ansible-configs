@@ -15,5 +15,14 @@ dependencies:
           server_name: chester.me dev.chester.me
       - server:
           file_name: redirects.chester.me
-          server_name: www.chester.me m.chester.me www.chester.me chester.blog.br www.chester.blog.br
+          server_name: www.chester.me m.chester.me chester.blog.br www.chester.blog.br
           return: 301 $scheme://chester.me$request_uri
+      - server:
+          file_name: cruzalinhas.com
+          root: "{{ cruzalinhas_checkout_dir }}/public"
+          server_name: cruzalinhas.com dev.cruzalinhas.com
+          location1: { name: '~ .json$', proxy_pass: 'http://cruzalinhas_rails' }
+      - server:
+          file_name: redirects.cruzalinhas.com
+          server_name: www.cruzalinhas.com www.cruzalinhas.com.br cruzalinhas.com.br
+          return: 301 $scheme://cruzalinhas.com$request_uri

@@ -1,5 +1,3 @@
 ---
 - name: Install a known bundler (so it manages other dependencies)
   command: bash -lc "cd {{ blog_checkout_dir }}; gem install bundler --version 1.10.5"
-
-
