@@ -51,6 +51,9 @@
       sudo: yes
       notify: reload supervisor
 
+    - name: Ensure temp directory exists (needed for first-time data load)
+      file: path={{ cruzalinhas_checkout_dir }}/tmp/cache state=directory
+
     - name: Install Selenium bindings for Python and headless display utility
       pip: name={{ item }}
       sudo: yes
@@ -71,8 +74,5 @@
       tags:
         - update_sptrans_data
 
-# TODO for going live:
-# test it all again
-# run on production
-# THEN:
+# TODO:
 # config crontab with download & update sptrans
