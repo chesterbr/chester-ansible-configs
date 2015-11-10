@@ -66,15 +66,6 @@ Those are tagged on the playbooks, please check them for such tags and add to `a
 - To publish the blog from its repository: `--tags publish_blog`.
 
 
-#### chester.me
-
-- Publish blog
-
-```bash
-ansible-playbook cruzalinhas.yml --tags publish_blog
-```
-
-
 [1]: https://github.com/chesterbr/cruzalinhas
 [2]: https://github.com/chesterbr/minitruco-j2me
 [3]: http://cruzalinhas.com
