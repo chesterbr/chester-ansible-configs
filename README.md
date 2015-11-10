@@ -26,6 +26,55 @@ An app that allows quickly finding public transportation routes in São Paulo. S
 
 This is a simple Java app that listens on the 6912 port, handling communication between [miniTruco][2] clients and spawning bot players to fill incomplete tables (a miniTruco table requires 4 players).
 
+## Quick setup (Mac OS X)
+
+This will get you a VM capable of running any of those services:
+
+```
+brew install rbenv ansible
+brew cask install virtualbox
+brew cask install vagrant
+ansible-galaxy install -r requirements.yml
+vagrant up
+```
+
+To install one (or more) of the services on the machine, run its playbook:
+
+```
+ansible-playbook blog.yml -i localhost:2222,
+```
+
+Point the "dev" version of the site to your local machine on `/etc/hosts`, e.g.:
+
+```
+127.0.0.1 dev.chester.me
+```
+
+and open the site on port 8080 (http://dev.chester.me:8080)
+
+Option: use the generated Vagrant ansible inventory (`.vagrant/provisioners/ansible/inventory/vagrant_ansible_inventory`) instead of `localhost:2222,`.
+
+### Passwords Vault
+
+A few tasks may require you to supply your own [password vault][13]. See [the sample file][14] for details.
+
+### Maintenance tasks
+
+Those are tagged on the playbooks, please check them for such tags and add to `ansible-playbook`. Examples:
+
+- To download new data from sptrans: `--tags update_sptrans_data`;
+- To publish the blog from its repository: `--tags publish_blog`.
+
+
+#### chester.me
+
+- Publish blog
+
+```bash
+ansible-playbook cruzalinhas.yml --tags publish_blog
+```
+
+
 [1]: https://github.com/chesterbr/cruzalinhas
 [2]: https://github.com/chesterbr/minitruco-j2me
 [3]: http://cruzalinhas.com
@@ -38,6 +87,8 @@ This is a simple Java app that listens on the 6912 port, handling communication 
 [10]: https://github.com/gleicon
 [11]: https://github.com/geerlingguy
 [12]: https://www.vagrantup.com/
+[13]: http://docs.ansible.com/ansible/playbooks_vault.html
+[14]: https://github.com/chesterbr/chester-ansible-configs/blob/master/roles/chesterbr.vault/vars/vault.yml.SAMPLE
 
 ## License
 
