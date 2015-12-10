@@ -38,11 +38,13 @@ ansible-galaxy install -r requirements.yml
 vagrant up
 ```
 
-To install one (or more) of the services on the machine, run its playbook:
+To install one (or more) of the services on the machine, run its playbook with the generated inventory:
 
 ```
-ansible-playbook blog.yml -i localhost:2222,
+ansible-playbook blog.yml -i .vagrant/provisioners/ansible/inventory/vagrant_ansible_inventory
 ```
+
+(yes, you could theoretically use `localhost:2222`, but that file will ensure git+ssh magic works with proper keys)
 
 Point the "dev" version of the site to your local machine on `/etc/hosts`, e.g.:
 
@@ -51,8 +53,6 @@ Point the "dev" version of the site to your local machine on `/etc/hosts`, e.g.:
 ```
 
 and open the site on port 8080 (http://dev.chester.me:8080)
-
-Option: use the generated Vagrant ansible inventory (`.vagrant/provisioners/ansible/inventory/vagrant_ansible_inventory`) instead of `localhost:2222,`.
 
 ### Passwords Vault
 
