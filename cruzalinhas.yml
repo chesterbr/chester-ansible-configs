@@ -7,6 +7,10 @@
       shell: "service supervisor restart; supervisorctl reload"
       sudo: yes
 
+    - name: restart app
+      shell: "supervisorctl restart cruzalinhas"
+      sudo: yes
+
   roles:
     - role: chesterbr.nginx
     - role: chesterbr.rbenv
@@ -34,6 +38,9 @@
            accept_hostkey=true
            dest={{ cruzalinhas_checkout_dir }}
            version=master
+      notify: restart app
+      tags:
+        - update_app
 
     - name: Ensure we're always in production rails environment
       lineinfile: dest=~/.profile line="export RAILS_ENV=production" regexp="^export RAILS_ENV"
