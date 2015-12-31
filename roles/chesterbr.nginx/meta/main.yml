@@ -21,7 +21,7 @@ dependencies:
           file_name: cruzalinhas.com
           root: "{{ cruzalinhas_checkout_dir }}/public"
           server_name: cruzalinhas.com dev.cruzalinhas.com
-          location1: { name: '~ .json$', proxy_pass: 'http://cruzalinhas_rails' }
+          location1: { name: '~ .*', proxy_pass: 'http://cruzalinhas_rails' }
       - server:
           file_name: redirects.cruzalinhas.com
           server_name: www.cruzalinhas.com www.cruzalinhas.com.br cruzalinhas.com.br
