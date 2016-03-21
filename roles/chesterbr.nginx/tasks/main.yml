@@ -3,5 +3,9 @@
   lineinfile: dest=/etc/nginx/sites-enabled/cruzalinhas.com insertbefore="BOF" line="upstream cruzalinhas_rails { server 127.0.0.1:3000; }"
   sudo: yes
 
+- name: Add pebblettc upstream to server config
+  lineinfile: dest=/etc/nginx/sites-enabled/pebblettc.chester.me insertbefore="BOF" line="upstream pebblettc_rails { server 127.0.0.1:3001; }"
+  sudo: yes
+
 - name: Refresh nginx config
   service: name=nginx state=reloaded

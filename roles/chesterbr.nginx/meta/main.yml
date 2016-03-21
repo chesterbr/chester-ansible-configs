@@ -23,6 +23,11 @@ dependencies:
           server_name: cruzalinhas.com dev.cruzalinhas.com
           location1: { name: '~ .*', proxy_pass: 'http://cruzalinhas_rails' }
       - server:
+          file_name: pebblettc.chester.me
+          root: "{{ pebblettc_app_dir }}/public"
+          server_name: pebblettc.chester.me dev.pebblettc.chester.me
+          location1: { name: '~ .*', proxy_pass: 'http://pebblettc_rails' }
+      - server:
           file_name: redirects.cruzalinhas.com
           server_name: www.cruzalinhas.com www.cruzalinhas.com.br cruzalinhas.com.br
           return: 301 $scheme://cruzalinhas.com$request_uri

@@ -1,0 +1,64 @@
+---
+- hosts: all
+  remote_user: "{{ admin_user }}"
+
+  handlers:
+    - name: reload supervisor
+      shell: "service supervisor restart; supervisorctl reload"
+      sudo: yes
+
+    - name: restart app
+      shell: "supervisorctl restart pebblettc"
+      sudo: yes
+
+  roles:
+    - role: chesterbr.vault
+    - role: chesterbr.nginx
+    - role: chesterbr.rbenv
+      ruby_version: 2.3.0
+      rbenv_user: "{{ admin_user }}"
+
+  tasks:
+    - name: Install prereq packages
+      apt: name={{ item }} state=installed
+      sudo: yes
+      with_items:
+        - git
+        - libsqlite3-dev
+        - supervisor
+
+    - name: Ensure code repository is at latest version
+      git: repo=git@github.com:chesterbr/pebble-ttc.git
+           accept_hostkey=true
+           dest={{ pebblettc_checkout_dir }}
+           version=master
+      notify: restart app
+      tags:
+        - update_app
+
+    - name: Ensure we're always in production rails environment
+      lineinfile: dest=~/.profile line="export RAILS_ENV=production" regexp="^export RAILS_ENV"
+
+    - name: Configure a keybase for cookie signing
+      lineinfile: dest=~/.profile line="export SECRET_KEY_BASE={{ pebblettc_secret_key_base }}" regexp="^export SECRET_KEY_BASE"
+
+    - name: Ensure we have all gem dependencies
+      command: bash -lc "cd {{ pebblettc_app_dir }}; bundle install"
+      register: bundler
+      changed_when: '"Installing" in bundler.stdout'
+
+    - name: Configures pebblettc back-end to run under supervisor (from source dir)
+      template: src=templates/pebblettc.conf.supervisor.j2 dest=/etc/supervisor/conf.d/pebblettc.conf
+      sudo: yes
+      notify: reload supervisor
+
+    - name: Initialize/migrate database
+      command: bash -lc "cd {{ pebblettc_app_dir }}; bundle exec rake db:create db:migrate"
+      tags:
+        - update_app
+
+    - name: Add crontab tasks from whenever
+      command: bash -lc "cd {{ pebblettc_app_dir }}; whenever -i"
+      notify: restart app
+      tags:
+        - update_app
