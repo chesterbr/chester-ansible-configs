@@ -4,7 +4,6 @@ dependencies:
   - role: zzet.rbenv
     rbenv:
       env: user
-      version: v0.4.0
       ruby_version: "{{ ruby_version }}"
     rbenv_users:
       - "{{ rbenv_user }}"
