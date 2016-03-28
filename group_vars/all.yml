@@ -21,4 +21,4 @@ sptrans_gtfs_filename: '/home/chester/cruzalinhas/source/public/gtfs-sptrans.zip
 
 # Pebble-TTC options
 pebblettc_checkout_dir: /home/chester/pebblettc/source
-pebblettc_app_dir: /home/chester/pebblettc/source/pebble-ttc-server
+pebblettc_app_dir: /home/chester/pebblettc/source/server
