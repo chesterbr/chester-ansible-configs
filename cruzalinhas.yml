@@ -5,11 +5,11 @@
   handlers:
     - name: reload supervisor
       shell: "service supervisor restart; supervisorctl reload"
-      sudo: yes
+      become: yes
 
     - name: restart app
       shell: "supervisorctl restart cruzalinhas"
-      sudo: yes
+      become: yes
 
   roles:
     - role: chesterbr.nginx
@@ -21,7 +21,7 @@
   tasks:
     - name: Install prereq packages
       apt: name={{ item }} state=installed
-      sudo: yes
+      become: yes
       with_items:
         - git
         - libsqlite3-dev
@@ -55,7 +55,7 @@
 
     - name: Configures cruzalinhas back-end to run under supervisor (from source dir)
       template: src=templates/cruzalinhas.conf.supervisor.j2 dest=/etc/supervisor/conf.d/cruzalinhas.conf
-      sudo: yes
+      become: yes
       notify: reload supervisor
 
     - name: Ensure temp directory exists (needed for first-time data load)
@@ -63,7 +63,7 @@
 
     - name: Install Selenium bindings for Python and headless display utility
       pip: name={{ item }}
-      sudo: yes
+      become: yes
       with_items:
         - selenium
         - pyvirtualdisplay

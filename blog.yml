@@ -19,7 +19,7 @@
 
   tasks:
     - name: Add legacy redirects to blog configuration
-      sudo: yes
+      become: yes
       lineinfile: dest="/etc/nginx/sites-available/chester.me" line="{{ item }}" insertafter="^ *server_name.*chester.me"
       notify:
         - reload nginx
@@ -54,7 +54,7 @@
 
     - name: Install prereq packages
       apt: name={{ item }} state=installed
-      sudo: yes
+      become: yes
       with_items:
         - git
 

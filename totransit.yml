@@ -5,11 +5,11 @@
   handlers:
     - name: reload supervisor
       shell: "service supervisor restart; supervisorctl reload"
-      sudo: yes
+      become: yes
 
     - name: restart app
       shell: "supervisorctl restart totransit"
-      sudo: yes
+      become: yes
 
   roles:
     - role: chesterbr.vault
@@ -21,7 +21,7 @@
   tasks:
     - name: Install prereq packages
       apt: name={{ item }} state=installed
-      sudo: yes
+      become: yes
       with_items:
         - git
         - libsqlite3-dev
@@ -49,7 +49,7 @@
 
     - name: Configures totransit back-end to run under supervisor (from source dir)
       template: src=templates/totransit.conf.supervisor.j2 dest=/etc/supervisor/conf.d/totransit.conf
-      sudo: yes
+      become: yes
       notify: reload supervisor
 
     - name: Initialize/migrate database
