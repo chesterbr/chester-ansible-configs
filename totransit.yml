@@ -8,7 +8,7 @@
       sudo: yes
 
     - name: restart app
-      shell: "supervisorctl restart pebblettc"
+      shell: "supervisorctl restart totransit"
       sudo: yes
 
   roles:
@@ -28,9 +28,9 @@
         - supervisor
 
     - name: Ensure code repository is at latest version
-      git: repo=git@github.com:chesterbr/pebble-ttc.git
+      git: repo=git@github.com:chesterbr/toronto-transit-for-pebble.git
            accept_hostkey=true
-           dest={{ pebblettc_checkout_dir }}
+           dest={{ totransit_checkout_dir }}
            version=master
       notify: restart app
       tags:
@@ -40,25 +40,25 @@
       lineinfile: dest=~/.profile line="export RAILS_ENV=production" regexp="^export RAILS_ENV"
 
     - name: Configure a keybase for cookie signing
-      lineinfile: dest=~/.profile line="export SECRET_KEY_BASE={{ pebblettc_secret_key_base }}" regexp="^export SECRET_KEY_BASE"
+      lineinfile: dest=~/.profile line="export SECRET_KEY_BASE={{ totransit_secret_key_base }}" regexp="^export SECRET_KEY_BASE"
 
     - name: Ensure we have all gem dependencies
-      command: bash -lc "cd {{ pebblettc_app_dir }}; bundle install"
+      command: bash -lc "cd {{ totransit_app_dir }}; bundle install"
       register: bundler
       changed_when: '"Installing" in bundler.stdout'
 
-    - name: Configures pebblettc back-end to run under supervisor (from source dir)
-      template: src=templates/pebblettc.conf.supervisor.j2 dest=/etc/supervisor/conf.d/pebblettc.conf
+    - name: Configures totransit back-end to run under supervisor (from source dir)
+      template: src=templates/totransit.conf.supervisor.j2 dest=/etc/supervisor/conf.d/totransit.conf
       sudo: yes
       notify: reload supervisor
 
     - name: Initialize/migrate database
-      command: bash -lc "cd {{ pebblettc_app_dir }}; bundle exec rake db:create db:migrate"
+      command: bash -lc "cd {{ totransit_app_dir }}; bundle exec rake db:create db:migrate"
       tags:
         - update_app
 
     - name: Add crontab tasks from whenever
-      command: bash -lc "cd {{ pebblettc_app_dir }}; whenever -i"
+      command: bash -lc "cd {{ totransit_app_dir }}; whenever -i"
       notify: restart app
       tags:
         - update_app

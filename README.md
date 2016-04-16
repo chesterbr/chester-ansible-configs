@@ -22,6 +22,10 @@ My [personal blog][4], currently based on a [forked Octopress 2.x][5].
 
 An app that allows quickly finding public transportation routes in São Paulo. See [source code][1] or [website][3] for details. It shares she same nginx with the blog above.
 
+### Toronto Transit for Pebble
+
+Back-end for a Pebble app that finds the nearest bus/streetcar stops and shows how long it will take for the next vehicles to arrive.
+
 ### miniTruco server [TODO]
 
 This is a simple Java app that listens on the 6912 port, handling communication between [miniTruco][2] clients and spawning bot players to fill incomplete tables (a miniTruco table requires 4 players).
