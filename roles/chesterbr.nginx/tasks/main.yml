@@ -1,11 +1,11 @@
 ---
 - name: Add cruzalinhas upstream to server config
   lineinfile: dest=/etc/nginx/sites-enabled/cruzalinhas.com insertbefore="BOF" line="upstream cruzalinhas_rails { server 127.0.0.1:3000; }"
-  sudo: yes
+  become: yes
 
 - name: Add totransit upstream to server config
   lineinfile: dest=/etc/nginx/sites-enabled/totransit.chester.me insertbefore="BOF" line="upstream totransit_rails { server 127.0.0.1:3001; }"
-  sudo: yes
+  become: yes
 
 - name: Refresh nginx config
   service: name=nginx state=reloaded

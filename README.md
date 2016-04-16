@@ -38,7 +38,6 @@ This will get you a VM capable of running any of those services:
 brew install rbenv ansible
 brew cask install virtualbox
 brew cask install vagrant
-ansible-galaxy install -r requirements.yml
 vagrant up
 ```
 
@@ -58,9 +57,13 @@ Point the "dev" version of the site to your local machine on `/etc/hosts`, e.g.:
 
 and open the site on port 8080 (http://dev.chester.me:8080)
 
-### Passwords Vault
+### Passwords vault
 
 A few tasks may require you to supply your own [password vault][13]. See [the sample file][14] for details.
+
+### Third party roles
+
+I used to have third party roles downloaded from Ansible Galaxy, but a few tend not to be maintained (or accept patches) very often (and Galaxy itself seems not to be very active - for example, a command to update roles is [two years in the wait](https://github.com/ansible/ansible/issues/6466)). Given the upcoming Ansible 2.0 changes, I followed the advice from experienced sysadmins: moved those roles inside and will eventually internalize their tasks to my particular case.
 
 ### Maintenance tasks
 

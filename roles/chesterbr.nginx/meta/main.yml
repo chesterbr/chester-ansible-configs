@@ -2,7 +2,7 @@
 ---
 dependencies:
   - role: bennojoy.nginx
-    sudo: yes
+    become: yes
     nginx_sites:
       - server:
           listen: 80 default_server
