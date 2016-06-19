@@ -3,7 +3,12 @@
 # hosting facility.
 ---
 - hosts: all
+  gather_facts: no     # gathering facts won't work until Python is installed
+  tasks:
+    - name: Install Python 2.7 (Ubuntu 16.04 only comes with Python 3 😂)
+      raw: sudo apt-get update -qq && sudo apt-get install -qq python2.7
 
+- hosts: all
   roles:
     - role: chesterbr.user_setup
     - role: geerlingguy.security

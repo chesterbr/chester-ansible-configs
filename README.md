@@ -36,8 +36,7 @@ This will get you a VM capable of running any of those services:
 
 ```
 brew install rbenv ansible
-brew cask install virtualbox
-brew cask install vagrant
+brew cask install virtualbox vagrant
 vagrant up
 ```
 
