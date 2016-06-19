@@ -8,7 +8,7 @@ This project contains the configuration for my personal projects (which I automa
 
 Feel free to use it (I'm licensing as MIT to ensure that) and to open issues or [contact me][6] if you find something awry.
 
-If you want to learn Ansible, I strongly recommend [Jeff Geerling][11]'s [Ansible for DevOps][8].
+If you want to learn Ansible, I strongly recommend [Jeff Geerling][11]'s [Ansible for DevOps][8]. Several tasks here were based on tasks on his book or some of [his tasks in Ansble Galaxy](15).
 
 (Se você lê Português, veja também o [Caixa de Ferramentas DevOps][9] do [Gleicon Moraes][10])
 
@@ -86,6 +86,7 @@ Those are tagged on the playbooks, please check them for such tags and add to `a
 [12]: https://www.vagrantup.com/
 [13]: http://docs.ansible.com/ansible/playbooks_vault.html
 [14]: https://github.com/chesterbr/chester-ansible-configs/blob/master/roles/chesterbr.vault/vars/vault.yml.SAMPLE
+[15]: https://galaxy.ansible.com/geerlingguy/
 
 ## License
 
