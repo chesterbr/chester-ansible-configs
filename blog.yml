@@ -12,10 +12,12 @@
 # SETUP
 
   roles:
+    - role: chesterbr.vault
     - role: chesterbr.nginx
-    - role: chesterbr.rbenv
+    - role: chesterbr.ruby
       ruby_version: 2.2.2
-      rbenv_user: "{{ admin_user }}"
+      bundler_version: 1.10.5
+      ruby_user: "{{ admin_user }}"
 
   tasks:
     - name: Add legacy redirects to blog configuration

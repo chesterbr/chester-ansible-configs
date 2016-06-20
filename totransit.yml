@@ -14,9 +14,9 @@
   roles:
     - role: chesterbr.vault
     - role: chesterbr.nginx
-    - role: chesterbr.rbenv
+    - role: chesterbr.ruby
       ruby_version: 2.3.0
-      rbenv_user: "{{ admin_user }}"
+      ruby_user: "{{ admin_user }}"
 
   tasks:
     - name: Install prereq packages

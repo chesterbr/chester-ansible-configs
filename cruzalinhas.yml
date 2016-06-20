@@ -12,11 +12,11 @@
       become: yes
 
   roles:
-    - role: chesterbr.nginx
-    - role: chesterbr.rbenv
-      ruby_version: 2.1.2
-      rbenv_user: "{{ admin_user }}"
     - role: chesterbr.vault
+    - role: chesterbr.nginx
+    - role: chesterbr.ruby
+      ruby_version: 2.1.2
+      ruby_user: "{{ admin_user }}"
 
   tasks:
     - name: Install prereq packages

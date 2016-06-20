@@ -43,10 +43,10 @@ vagrant up
 To install one (or more) of the services on the machine, run its playbook with the generated inventory:
 
 ```
-ansible-playbook blog.yml -i .vagrant/provisioners/ansible/inventory/vagrant_ansible_inventory
+ansible-playbook blog.yml -i localhost:2222,
 ```
 
-(yes, you could theoretically use `localhost:2222`, but that file will ensure git+ssh magic works with proper keys)
+(alternatively you can use `-i .vagrant/provisioners/ansible/inventory/vagrant_ansible_inventory`, but it will log in with the default user for Ubuntu provisioning, not the `{{ admin_user }}` defined on the global vars)
 
 Point the "dev" version of the site to your local machine on `/etc/hosts`, e.g.:
 
