@@ -45,20 +45,3 @@
 - name: Install a known bundler (so it manages other dependencies)
   command: bash -lc "rbenv shell {{ ruby_version }}; gem install bundler --version {{ bundler_version }}"
   when: ruby_version is defined and bundler_version is defined
-
-
-
-# - name: Clone rbenv and ensure it is up-to-date
-#   git: repo=git@github.com:rbenv/rbenv.git
-#        accept_hostkey=true
-#        dest="/home/{{ admin_user }}/.rbenv"
-#        version=master
-
-# - name: Add rbenv configuration to .bash_profile
-#   lineinfile: dest="/home/{{ admin_user }}/.bash_profile" line='export PATH="$HOME/.rbenv/bin:$PATH"'
-
-# - name: Install the ruby required by the project
-#   command: bash -lc "rbenv-install "
-
-# - name: Install a known bundler (so it manages other dependencies)
-#   command: bash -lc "cd {{ rbenv_project_dir }}; gem install bundler --version 1.10.5"

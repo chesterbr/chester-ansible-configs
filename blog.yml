@@ -63,7 +63,7 @@
 # PUBLISH
 
     - name: Ensure blog repository is at latest version
-      git: repo=git@github.com:chesterbr/octopress.git
+      git: repo=git://github.com/chesterbr/octopress.git
            accept_hostkey=true
            dest={{ blog_checkout_dir }}
            version=master

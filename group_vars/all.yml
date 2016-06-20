@@ -37,8 +37,6 @@ nginx_sites:
       server_name: www.cruzalinhas.com www.cruzalinhas.com.br cruzalinhas.com.br
       return: 301 $scheme://cruzalinhas.com$request_uri
 
-
-
 # Blog options
 blog_checkout_dir: /home/chester/chester.me/source
 blog_public_dir: /home/chester/chester.me/www
