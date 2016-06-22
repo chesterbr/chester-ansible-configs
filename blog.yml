@@ -16,6 +16,7 @@
     - role: chesterbr.nginx
     - role: chesterbr.ruby
       bundler_version: 1.10.5
+      ruby_version: 2.2.2
       ruby_user: "{{ admin_user }}"
 
   tasks:
@@ -72,7 +73,7 @@
     # TODO move this somehow to the role?
     #      idea: make the checkout part of the ruby role
     - name: "Install ruby required by the code (e.g.: .ruby_version)"
-      command: bash -lc "cd {{ blog_checkout_dir }}; rbenv install"
+      shell: bash -lc "cd {{ blog_checkout_dir }}; rbenv install"
       register: ruby_install_result
       failed_when: ruby_install_result.rc != 0 and not (ruby_install_result.stderr | search('^rbenv.*versions.*already exists$'))
       tags:

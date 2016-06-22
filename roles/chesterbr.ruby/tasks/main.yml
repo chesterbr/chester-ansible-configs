@@ -17,14 +17,9 @@
        dest=~{{ ruby_user }}/.rbenv
        accept_hostkey=true
 
-- name: Ensure fragments bash dir exists
-  file: dest=~{{ ruby_user }}/.bash.d/ state=directory
-
-- name: Install rbenv bash file
-  template: src=50_rbenv.bash.j2 dest=~{{ ruby_user }}/.bash.d/50_rbenv.bash mode=700 owner={{ ruby_user }}
-
-- name: Source rbenv bash file in dot bashrc
-  lineinfile: dest=~{{ ruby_user }}/.bash_profile regexp="^source ~/\.bash\.d/50_rbenv\.bash" insertafter=EOF line="source ~/.bash.d/50_rbenv.bash" create=yes
+- name: Install rbenv system-wide bash file
+  become: true
+  template: src=rbenv.sh.j2 dest=/etc/profile.d/rbenv.sh mode=755 owner=root group=root
 
 - name: Create plugin directory
   file: path=~{{ ruby_user }}/.rbenv/plugins/ owner={{ ruby_user }} group={{ ruby_user }} mode=0755 state=directory
