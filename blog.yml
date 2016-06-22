@@ -86,6 +86,8 @@
 
     - name: Rebuild the blog
       command: bash -lc "cd {{ blog_checkout_dir }}; bundle exec rake generate"
+      environment:
+        - LC_ALL: en_US.UTF-8
       tags:
         - publish_blog
 
