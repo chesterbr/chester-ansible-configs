@@ -20,7 +20,7 @@ nginx_sites:
       server_name: chester.me dev.chester.me
   - server:
       file_name: redirects.chester.me
-      server_name: www.chester.me m.chester.me chester.blog.br www.chester.blog.br
+      server_name: www.chester.me m.chester.me m.chester.dev.me chester.blog.br www.chester.blog.br
       return: 301 $scheme://chester.me$request_uri
   - server:
       file_name: cruzalinhas.com

@@ -8,7 +8,7 @@
   become: yes
   template: src=nginx.conf.j2 dest=/etc/nginx/nginx.conf
   notify:
-   - restart nginx
+    - restart nginx
 
 - name: Copy the nginx default configuration file
   become: yes
@@ -26,13 +26,15 @@
   become: yes
   template: src=site.j2 dest=/etc/nginx/sites-available/{{ item['server']['file_name'] }}
   with_items: "{{ nginx_sites }}"
+  notify:
+    - reload nginx
 
 - name: Create the links to enable site configurations
   become: yes
   file: path=/etc/nginx/sites-enabled/{{ item['server']['file_name'] }} state=link src=/etc/nginx/sites-available/{{ item['server']['file_name'] }}
   with_items: "{{ nginx_sites }}"
   notify:
-   - reload nginx
+    - reload nginx
 
 - name: Add cruzalinhas upstream to server config
   become: yes
@@ -44,4 +46,4 @@
   become: yes
   lineinfile: dest=/etc/nginx/sites-enabled/totransit.chester.me insertbefore="BOF" line="upstream totransit_rails { server 127.0.0.1:3001; }"
   notify:
-   - reload nginx
+    - reload nginx

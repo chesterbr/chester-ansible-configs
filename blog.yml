@@ -15,8 +15,6 @@
     - role: chesterbr.vault
     - role: chesterbr.nginx
     - role: chesterbr.ruby
-      bundler_version: 1.10.5
-      ruby_version: 2.2.2
       ruby_user: "{{ admin_user }}"
 
   tasks:
@@ -26,7 +24,8 @@
       notify:
         - reload nginx
       with_items:
-        - location ~ ^/m/(.*)$ { rewrite ^(.*)$ http://m.chester.me/$1 redirect; }
+        - location ~ ^/m/?$ { rewrite ^(.*)$ /deploy/download.wml redirect; }
+        - location ~ ^/m/deploy/(.*)$ { rewrite ^(.*)$ /deploy/$1 redirect; }
         - location ~ ^/200(.)(..)\.html$ { rewrite ^(.*)$ /archives/200$1/$2/ redirect; }
         - location ~ ^/micros.html?$ { rewrite ^(.*)$ /micros redirect; }
         - location ~ ^/software.html?$ { rewrite ^(.*)$ /archives/category/portfolio redirect; }
