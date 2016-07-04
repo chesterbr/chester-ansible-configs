@@ -14,6 +14,16 @@
   roles:
     - role: chesterbr.vault
     - role: chesterbr.nginx
+      nginx_sites:
+        - server:
+            file_name: chester.me
+            root: "{{ blog_public_dir }}"
+            server_name: chester.me dev.chester.me
+        - server:
+            file_name: redirects.chester.me
+            server_name: www.chester.me m.chester.me m.chester.dev.me chester.blog.br www.chester.blog.br
+            return: 301 $scheme://chester.me$request_uri
+
     - role: chesterbr.ruby
       ruby_user: "{{ admin_user }}"
 
@@ -24,8 +34,8 @@
       notify:
         - reload nginx
       with_items:
-        - location ~ ^/m/?$ { rewrite ^(.*)$ /deploy/download.wml redirect; }
-        - location ~ ^/m/deploy/(.*)$ { rewrite ^(.*)$ /deploy/$1 redirect; }
+        - location ~ ^/m/ { rewrite ^/m/deploy/(.*)$ /deploy/$1 redirect; }
+        - location ~ ^/deploy.?$ { rewrite ^(.*)$ /deploy/download.wml redirect; }
         - location ~ ^/200(.)(..)\.html$ { rewrite ^(.*)$ /archives/200$1/$2/ redirect; }
         - location ~ ^/micros.html?$ { rewrite ^(.*)$ /micros redirect; }
         - location ~ ^/software.html?$ { rewrite ^(.*)$ /archives/category/portfolio redirect; }
@@ -69,8 +79,6 @@
       tags:
         - publish_blog
 
-    # TODO move this somehow to the role?
-    #      idea: make the checkout part of the ruby role
     - name: "Install ruby required by the code (e.g.: .ruby_version)"
       shell: bash -lc "cd {{ blog_checkout_dir }}; rbenv install"
       register: ruby_install_result
@@ -79,7 +87,7 @@
         - publish_blog
 
     - name: Ensure we have all gem dependencies for octopress
-      command: bash -lc "cd {{ blog_checkout_dir }}; bundle install"
+      command: bash -lc "cd {{ blog_checkout_dir }}; gem install bundler; bundle install"
       tags:
         - publish_blog
 

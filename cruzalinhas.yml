@@ -14,9 +14,17 @@
   roles:
     - role: chesterbr.vault
     - role: chesterbr.nginx
+      nginx_sites:
+        - server:
+            file_name: cruzalinhas.com
+            root: "{{ cruzalinhas_checkout_dir }}/public"
+            server_name: cruzalinhas.com dev.cruzalinhas.com
+            location1: { name: '~ .*', proxy_pass: 'http://cruzalinhas_rails' }
+        - server:
+            file_name: redirects.cruzalinhas.com
+            server_name: www.cruzalinhas.com www.cruzalinhas.com.br cruzalinhas.com.br
+            return: 301 $scheme://cruzalinhas.com$request_uri
     - role: chesterbr.ruby
-      ruby_version: 2.1.2
-      ruby_user: "{{ admin_user }}"
 
   tasks:
     - name: Install prereq packages
@@ -33,6 +41,12 @@
         - makepasswd
         - supervisor
 
+    - name: Add cruzalinhas upstream to server config
+      become: yes
+      lineinfile: dest=/etc/nginx/sites-enabled/cruzalinhas.com insertbefore="BOF" line="upstream cruzalinhas_rails { server 127.0.0.1:3000; }"
+      notify:
+       - reload nginx
+
     - name: Ensure code repository is at latest version
       git: repo=git://github.com/chesterbr/cruzalinhas.git
            accept_hostkey=true
@@ -48,8 +62,13 @@
     - name: Configure a keybase for cookie signing
       lineinfile: dest=~/.profile line="export SECRET_KEY_BASE={{ cruzalinhas_secret_key_base }}" regexp="^export SECRET_KEY_BASE"
 
+    - name: "Install ruby required by the code (e.g.: .ruby_version)"
+      shell: bash -lc "cd {{ cruzalinhas_checkout_dir }}; rbenv install"
+      register: ruby_install_result
+      failed_when: ruby_install_result.rc != 0 and not (ruby_install_result.stderr | search('^rbenv.*versions.*already exists$'))
+
     - name: Ensure we have all gem dependencies for cruzalinhas
-      command: bash -lc "cd {{ cruzalinhas_checkout_dir }}; bundle install"
+      command: bash -lc "cd {{ cruzalinhas_checkout_dir }}; gem install bundle; bundle install"
       register: bundler
       changed_when: '"Installing" in bundler.stdout'
 

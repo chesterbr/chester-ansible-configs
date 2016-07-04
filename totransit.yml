@@ -14,9 +14,13 @@
   roles:
     - role: chesterbr.vault
     - role: chesterbr.nginx
+      nginx_sites:
+        - server:
+        file_name: totransit.chester.me
+        root: "{{ totransit_app_dir }}/public"
+        server_name: totransit.chester.me dev.totransit.chester.me
+        location1: { name: '~ .*', proxy_pass: 'http://totransit_rails' }
     - role: chesterbr.ruby
-      ruby_version: 2.3.0
-      ruby_user: "{{ admin_user }}"
 
   tasks:
     - name: Install prereq packages
@@ -26,6 +30,12 @@
         - git
         - libsqlite3-dev
         - supervisor
+
+    - name: Add totransit upstream to server config
+      become: yes
+      lineinfile: dest=/etc/nginx/sites-enabled/totransit.chester.me insertbefore="BOF" line="upstream totransit_rails { server 127.0.0.1:3001; }"
+      notify:
+        - reload nginx
 
     - name: Ensure code repository is at latest version
       git: repo=git://github.com/chesterbr/toronto-transit-for-pebble.git
@@ -42,8 +52,13 @@
     - name: Configure a keybase for cookie signing
       lineinfile: dest=~/.profile line="export SECRET_KEY_BASE={{ totransit_secret_key_base }}" regexp="^export SECRET_KEY_BASE"
 
+    - name: "Install ruby required by the code (e.g.: .ruby_version)"
+      shell: bash -lc "cd {{ totransit_app_dir }}; rbenv install"
+      register: ruby_install_result
+      failed_when: ruby_install_result.rc != 0 and not (ruby_install_result.stderr | search('^rbenv.*versions.*already exists$'))
+
     - name: Ensure we have all gem dependencies
-      command: bash -lc "cd {{ totransit_app_dir }}; bundle install"
+      command: bash -lc "cd {{ totransit_app_dir }}; gem install bundler; bundle install"
       register: bundler
       changed_when: '"Installing" in bundler.stdout'
 
