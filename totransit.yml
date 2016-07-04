@@ -16,11 +16,12 @@
     - role: chesterbr.nginx
       nginx_sites:
         - server:
-        file_name: totransit.chester.me
-        root: "{{ totransit_app_dir }}/public"
-        server_name: totransit.chester.me dev.totransit.chester.me
-        location1: { name: '~ .*', proxy_pass: 'http://totransit_rails' }
+            file_name: totransit.chester.me
+            root: "{{ totransit_app_dir }}/public"
+            server_name: totransit.chester.me dev.totransit.chester.me
+            location1: { name: '~ .*', proxy_pass: 'http://totransit_rails' }
     - role: chesterbr.ruby
+      ruby_user: "{{ admin_user }}"
 
   tasks:
     - name: Install prereq packages

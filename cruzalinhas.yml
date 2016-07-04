@@ -25,6 +25,7 @@
             server_name: www.cruzalinhas.com www.cruzalinhas.com.br cruzalinhas.com.br
             return: 301 $scheme://cruzalinhas.com$request_uri
     - role: chesterbr.ruby
+      ruby_user: "{{ admin_user }}"
 
   tasks:
     - name: Install prereq packages
@@ -36,7 +37,7 @@
         - xvfb
         - firefox
         - python-pip
-        - openjdk-7-jdk
+        - default-jdk
         - nodejs
         - makepasswd
         - supervisor
