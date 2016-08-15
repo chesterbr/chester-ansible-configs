@@ -52,6 +52,8 @@ Point the "dev" version of the site to your local machine on `/etc/hosts`, e.g.:
 
 ```
 127.0.0.1 dev.chester.me
+127.0.0.1 dev.cruzalinhas.com
+127.0.0.1 dev.totransit.chester.me
 ```
 
 and open the site on port 8080 (http://dev.chester.me:8080)
