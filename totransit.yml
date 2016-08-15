@@ -32,6 +32,10 @@
         - libsqlite3-dev
         - supervisor
 
+    - name: "Auto-start supervisord on boot (temp fix for Ubuntu 16.04 bug: https://bugs.launchpad.net/ubuntu/+source/supervisor/+bug/1594740)"
+      shell: "systemctl enable supervisor; systemctl start supervisor"
+      become: yes
+
     - name: Add totransit upstream to server config
       become: yes
       lineinfile: dest=/etc/nginx/sites-enabled/totransit.chester.me insertbefore="BOF" line="upstream totransit_rails { server 127.0.0.1:3001; }"

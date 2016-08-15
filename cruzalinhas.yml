@@ -43,7 +43,7 @@
         - supervisor
 
     - name: "Auto-start supervisord on boot (temp fix for Ubuntu 16.04 bug: https://bugs.launchpad.net/ubuntu/+source/supervisor/+bug/1594740)"
-      service: name=supervisor enabled=yes state=started
+      shell: "systemctl enable supervisor; systemctl start supervisor"
       become: yes
 
     - name: Add cruzalinhas upstream to server config
