@@ -102,6 +102,7 @@
 
     - name: Update SPTrans data
       command: bash -lc "cd {{ cruzalinhas_checkout_dir }}; bundle exec rake sptrans:import"
+      notify: restart app
       tags:
         - update_sptrans_data
 
