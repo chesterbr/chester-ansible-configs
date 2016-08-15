@@ -4,7 +4,7 @@
 
   handlers:
     - name: reload supervisor
-      shell: "service supervisor restart; supervisorctl reload"
+      service: name=supervisor state=reloaded
       become: yes
 
     - name: restart app
