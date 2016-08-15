@@ -42,6 +42,10 @@
         - makepasswd
         - supervisor
 
+    - name: "Auto-start supervisord on boot (temp fix for Ubuntu 16.04 bug: https://bugs.launchpad.net/ubuntu/+source/supervisor/+bug/1594740)"
+      service: name=supervisor enabled=yes state=started
+      become: yes
+
     - name: Add cruzalinhas upstream to server config
       become: yes
       lineinfile: dest=/etc/nginx/sites-enabled/cruzalinhas.com insertbefore="BOF" line="upstream cruzalinhas_rails { server 127.0.0.1:3000; }"
