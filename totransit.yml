@@ -58,12 +58,12 @@
       lineinfile: dest=~/.profile line="export SECRET_KEY_BASE={{ totransit_secret_key_base }}" regexp="^export SECRET_KEY_BASE"
 
     - name: "Install ruby required by the code (e.g.: .ruby_version)"
-      shell: bash -lc "cd {{ totransit_app_dir }}; rbenv install"
+      shell: bash -lc "cd {{ totransit_app_dir }}; RUBY_CONFIGURE_OPTS=--disable-install-doc rbenv install"
       register: ruby_install_result
       failed_when: ruby_install_result.rc != 0 and not (ruby_install_result.stderr | search('^rbenv.*versions.*already exists$'))
 
     - name: Ensure we have all gem dependencies
-      command: bash -lc "cd {{ totransit_app_dir }}; gem install bundler; bundle install"
+      command: bash -lc "cd {{ totransit_app_dir }}; gem install bundler; bundle install --deployment"
       register: bundler
       changed_when: '"Installing" in bundler.stdout'
 
