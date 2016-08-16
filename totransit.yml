@@ -4,7 +4,7 @@
 
   handlers:
     - name: reload supervisor
-      service: name=supervisor state=reloaded
+      shell: "service supervisor restart; supervisorctl reload"
       become: yes
 
     - name: restart app
@@ -78,7 +78,11 @@
         - update_app
 
     - name: Add crontab tasks from whenever
-      command: bash -lc "cd {{ totransit_app_dir }}; whenever -i"
+      command: bash -lc "cd {{ totransit_app_dir }}; bundle exec whenever -i"
       notify: restart app
       tags:
         - update_app
+
+    - name: Do a first load of the ttc data
+      command: bash -lc "cd {{ totransit_app_dir }}; DISABLE_DATABASE_ENVIRONMENT_CHECK=1 bundle exec rake db:reset ttc:crawl"
+      notify: restart app
