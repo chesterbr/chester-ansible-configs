@@ -8,7 +8,7 @@ This project contains the configuration for my personal projects (which I automa
 
 Feel free to use it (I'm licensing as MIT to ensure that) and to open issues or [contact me][6] if you find something awry.
 
-If you want to learn Ansible, I strongly recommend [Jeff Geerling][11]'s [Ansible for DevOps][8].
+If you want to learn Ansible, I strongly recommend [Jeff Geerling][11]'s [Ansible for DevOps][8]. Several tasks here were based on tasks on his book or some of [his tasks in Ansble Galaxy](15).
 
 (Se você lê Português, veja também o [Caixa de Ferramentas DevOps][9] do [Gleicon Moraes][10])
 
@@ -36,23 +36,24 @@ This will get you a VM capable of running any of those services:
 
 ```
 brew install rbenv ansible
-brew cask install virtualbox
-brew cask install vagrant
+brew cask install virtualbox vagrant
 vagrant up
 ```
 
 To install one (or more) of the services on the machine, run its playbook with the generated inventory:
 
 ```
-ansible-playbook blog.yml -i .vagrant/provisioners/ansible/inventory/vagrant_ansible_inventory
+ansible-playbook blog.yml -i localhost:2222,
 ```
 
-(yes, you could theoretically use `localhost:2222`, but that file will ensure git+ssh magic works with proper keys)
+(alternatively you can use `-i .vagrant/provisioners/ansible/inventory/vagrant_ansible_inventory`, but it will log in with the default user for Ubuntu provisioning, not the `{{ admin_user }}` defined on the global vars)
 
 Point the "dev" version of the site to your local machine on `/etc/hosts`, e.g.:
 
 ```
 127.0.0.1 dev.chester.me
+127.0.0.1 dev.cruzalinhas.com
+127.0.0.1 dev.totransit.chester.me
 ```
 
 and open the site on port 8080 (http://dev.chester.me:8080)
@@ -87,6 +88,7 @@ Those are tagged on the playbooks, please check them for such tags and add to `a
 [12]: https://www.vagrantup.com/
 [13]: http://docs.ansible.com/ansible/playbooks_vault.html
 [14]: https://github.com/chesterbr/chester-ansible-configs/blob/master/roles/chesterbr.vault/vars/vault.yml.SAMPLE
+[15]: https://galaxy.ansible.com/geerlingguy/
 
 ## License
 

@@ -1,11 +1,37 @@
 ---
-- name: Add cruzalinhas upstream to server config
-  lineinfile: dest=/etc/nginx/sites-enabled/cruzalinhas.com insertbefore="BOF" line="upstream cruzalinhas_rails { server 127.0.0.1:3000; }"
-  become: yes
 
-- name: Add totransit upstream to server config
-  lineinfile: dest=/etc/nginx/sites-enabled/totransit.chester.me insertbefore="BOF" line="upstream totransit_rails { server 127.0.0.1:3001; }"
+- name: Install the nginx packages
   become: yes
+  apt: name=nginx state=present
 
-- name: Refresh nginx config
-  service: name=nginx state=reloaded
+- name: Copy the nginx configuration file
+  become: yes
+  template: src=nginx.conf.j2 dest=/etc/nginx/nginx.conf
+  notify:
+    - restart nginx
+
+- name: Copy the nginx default configuration file
+  become: yes
+  template: src=default.conf.j2 dest=/etc/nginx/conf.d/default.conf
+
+- name: Copy the nginx default site configuration file
+  become: yes
+  template: src=default_site.j2 dest=/etc/nginx/sites-available/default
+
+- name: Create the link for site enabled specific configurations
+  become: yes
+  file: path=/etc/nginx/sites-enabled/default state=link src=/etc/nginx/sites-available/default
+
+- name: Create the configurations for sites on the current playbook
+  become: yes
+  template: src=site.j2 dest=/etc/nginx/sites-available/{{ item['server']['file_name'] }}
+  with_items: "{{ nginx_sites }}"
+  notify:
+    - reload nginx
+
+- name: Create the links to enable site configurations
+  become: yes
+  file: path=/etc/nginx/sites-enabled/{{ item['server']['file_name'] }} state=link src=/etc/nginx/sites-available/{{ item['server']['file_name'] }}
+  with_items: "{{ nginx_sites }}"
+  notify:
+    - reload nginx

@@ -1,0 +1,47 @@
+---
+- name: Install fail2ban.
+  apt: name=fail2ban state=present
+
+- name: Ensure fail2ban is running and enabled on boot.
+  service: name=fail2ban state=started enabled=yes
+
+- name: Update SSH configuration to be more secure.
+  lineinfile:
+    dest: "/etc/ssh/sshd_config"
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    state: present
+  with_items:
+    - regexp: "^PasswordAuthentication"
+      line: "PasswordAuthentication no"
+    - regexp: "^PermitRootLogin"
+      line: "PermitRootLogin no"
+  notify: restart ssh
+
+- name: Install unattended upgrades package and dependencies.
+  apt: pkg={{ item }} state=present
+  with_items:
+    - unattended-upgrades
+    - update-notifier-common
+    - mailutils
+
+- name: Copy unattended-upgrades configuration files in place.
+  template:
+    src: "../templates/{{ item }}.j2"
+    dest: "/etc/apt/apt.conf.d/{{ item }}"
+    owner: root
+    group: root
+    mode: 0644
+  with_items:
+    - 20auto-upgrades
+    - 50unattended-upgrades
+
+- name: Configure ufw (firewall) rules
+  ufw: rule=allow port={{ item }}
+  with_items:
+    - 22
+    - 80
+    - 6912
+
+- name: Enable ufw and load it on startup; reject any connections not on rules
+  ufw: state=enabled policy=reject

@@ -1,9 +1,0 @@
-# Ensures rbenv and a given ruby are installed
----
-dependencies:
-  - role: zzet.rbenv
-    rbenv:
-      env: user
-      ruby_version: "{{ ruby_version }}"
-    rbenv_users:
-      - "{{ rbenv_user }}"

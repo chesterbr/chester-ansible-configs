@@ -3,8 +3,19 @@
 - name: Create admin user
   user: name={{ admin_user }} shell=/bin/bash
 
-- name: Ensure admin user can log in
+- name: Ensure admin user can log in with their key
   authorized_key: user={{ admin_user }} key={{ admin_user_key }}
   tags: update_admin_keys
 
+- name: Ensure admin user is a passwordless sudoer
+  lineinfile:
+    dest: /etc/sudoers
+    regexp: '^{{ admin_user }}'
+    line: '{{ admin_user }} ALL=(ALL) NOPASSWD: ALL'
+    state: present
+    validate: 'visudo -cf %s'
 
+- name: Install utilities that make admin's life easier
+  apt: name={{ item }} state=installed
+  with_items:
+    - htop

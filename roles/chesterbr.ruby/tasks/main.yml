@@ -1,0 +1,42 @@
+---
+- name: Install ruby management dependencies
+  become: yes
+  apt: name={{ item }} state=installed
+  with_items:
+    - build-essential
+    - libssl-dev
+    - libreadline-dev
+    - zlib1g-dev
+    - git
+
+- name: Avoid documentation and other slow stuff on gem (bundle) install
+  template: src=.gemrc.j2 dest=~{{ ruby_user }}/.gemrc mode=700 owner={{ ruby_user }}
+
+- name: Install rbenv
+  git: repo=https://github.com/sstephenson/rbenv.git
+       dest=~{{ ruby_user }}/.rbenv
+       accept_hostkey=true
+
+- name: Install rbenv system-wide bash file
+  become: true
+  template: src=rbenv.sh.j2 dest=/etc/profile.d/rbenv.sh mode=755 owner=root group=root
+
+- name: Create plugin directory
+  file: path=~{{ ruby_user }}/.rbenv/plugins/ owner={{ ruby_user }} group={{ ruby_user }} mode=0755 state=directory
+
+- name: Install ruby-build
+  git: repo=git://github.com/sstephenson/ruby-build.git dest=~{{ ruby_user }}/.rbenv/plugins/ruby-build accept_hostkey=true
+
+- name: Check if required ruby is already installed
+  command: bash -lc "rbenv versions | grep -q {{ ruby_version }}"
+  when: ruby_version is defined
+  ignore_errors: yes
+  register: ruby_version_check
+
+- name: Pre-install ruby
+  command: bash -lc "rbenv install {{ ruby_version }}"
+  when: ruby_version is defined and ruby_version_check.rc == 1
+
+- name: Install a known bundler (so it manages other dependencies)
+  command: bash -lc "rbenv shell {{ ruby_version }}; gem install bundler --version {{ bundler_version }}"
+  when: ruby_version is defined and bundler_version is defined

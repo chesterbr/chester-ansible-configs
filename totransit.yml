@@ -14,9 +14,14 @@
   roles:
     - role: chesterbr.vault
     - role: chesterbr.nginx
-    - role: chesterbr.rbenv
-      ruby_version: 2.3.0
-      rbenv_user: "{{ admin_user }}"
+      nginx_sites:
+        - server:
+            file_name: totransit.chester.me
+            root: "{{ totransit_app_dir }}/public"
+            server_name: totransit.chester.me dev.totransit.chester.me
+            location1: { name: '~ .*', proxy_pass: 'http://totransit_rails' }
+    - role: chesterbr.ruby
+      ruby_user: "{{ admin_user }}"
 
   tasks:
     - name: Install prereq packages
@@ -27,8 +32,18 @@
         - libsqlite3-dev
         - supervisor
 
+    - name: "Auto-start supervisord on boot (temp fix for Ubuntu 16.04 bug: https://bugs.launchpad.net/ubuntu/+source/supervisor/+bug/1594740)"
+      shell: "systemctl enable supervisor; systemctl start supervisor"
+      become: yes
+
+    - name: Add totransit upstream to server config
+      become: yes
+      lineinfile: dest=/etc/nginx/sites-enabled/totransit.chester.me insertbefore="BOF" line="upstream totransit_rails { server 127.0.0.1:3001; }"
+      notify:
+        - reload nginx
+
     - name: Ensure code repository is at latest version
-      git: repo=git@github.com:chesterbr/toronto-transit-for-pebble.git
+      git: repo=git://github.com/chesterbr/toronto-transit-for-pebble.git
            accept_hostkey=true
            dest={{ totransit_checkout_dir }}
            version=master
@@ -42,8 +57,13 @@
     - name: Configure a keybase for cookie signing
       lineinfile: dest=~/.profile line="export SECRET_KEY_BASE={{ totransit_secret_key_base }}" regexp="^export SECRET_KEY_BASE"
 
+    - name: "Install ruby required by the code (e.g.: .ruby_version)"
+      shell: bash -lc "cd {{ totransit_app_dir }}; RUBY_CONFIGURE_OPTS=--disable-install-doc rbenv install"
+      register: ruby_install_result
+      failed_when: ruby_install_result.rc != 0 and not (ruby_install_result.stderr | search('^rbenv.*versions.*already exists$'))
+
     - name: Ensure we have all gem dependencies
-      command: bash -lc "cd {{ totransit_app_dir }}; bundle install"
+      command: bash -lc "cd {{ totransit_app_dir }}; gem install bundler; bundle install --deployment"
       register: bundler
       changed_when: '"Installing" in bundler.stdout'
 
@@ -58,7 +78,11 @@
         - update_app
 
     - name: Add crontab tasks from whenever
-      command: bash -lc "cd {{ totransit_app_dir }}; whenever -i"
+      command: bash -lc "cd {{ totransit_app_dir }}; bundle exec whenever -i"
       notify: restart app
       tags:
         - update_app
+
+    - name: Do a first load of the ttc data
+      command: bash -lc "cd {{ totransit_app_dir }}; DISABLE_DATABASE_ENVIRONMENT_CHECK=1 bundle exec rake db:reset ttc:crawl"
+      notify: restart app
