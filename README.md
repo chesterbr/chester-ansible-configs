@@ -71,7 +71,8 @@ I used to have third party roles downloaded from Ansible Galaxy, but a few tend 
 Those are tagged on the playbooks, please check them for such tags and add to `ansible-playbook`. Examples:
 
 - To download new data from sptrans: `--tags update_sptrans_data`;
-- To publish the blog from its repository: `--tags publish_blog`.
+- To publish the blog from its repository: `--tags publish_blog`;
+- To deploy the latest master of cruzalinhas or toronto-transit-time: `--tags update_app`.
 
 
 [1]: https://github.com/chesterbr/cruzalinhas
