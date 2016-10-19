@@ -61,19 +61,26 @@
       shell: bash -lc "cd {{ totransit_app_dir }}; RUBY_CONFIGURE_OPTS=--disable-install-doc rbenv install"
       register: ruby_install_result
       failed_when: ruby_install_result.rc != 0 and not (ruby_install_result.stderr | search('^rbenv.*versions.*already exists$'))
+      tags:
+        - update_app
 
     - name: Ensure we have all gem dependencies
       command: bash -lc "cd {{ totransit_app_dir }}; gem install bundler; bundle install --deployment"
       register: bundler
       changed_when: '"Installing" in bundler.stdout'
+      tags:
+        - update_app
 
     - name: Configures totransit back-end to run under supervisor (from source dir)
       template: src=templates/totransit.conf.supervisor.j2 dest=/etc/supervisor/conf.d/totransit.conf
       become: yes
       notify: reload supervisor
 
-    - name: Initialize/migrate database
-      command: bash -lc "cd {{ totransit_app_dir }}; bundle exec rake db:create db:migrate"
+    - name: Initialize database
+      command: bash -lc "cd {{ totransit_app_dir }}; bundle exec rake db:create"
+
+    - name: Migrate database
+      command: bash -lc "cd {{ totransit_app_dir }}; bundle exec rake db:migrate"
       tags:
         - update_app
 
