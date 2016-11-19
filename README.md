@@ -35,36 +35,31 @@ This is a simple Java app that listens on the 6912 port, handling communication 
 This will get you a VM capable of running any of those services:
 
 ```
+brew update
 brew install rbenv ansible
 brew cask install virtualbox vagrant
 vagrant up
 ```
 
-To install one (or more) of the services on the machine, run its playbook with the generated inventory:
+To install one (or more) of the services on the virtual machine, run its playbook:
 
 ```
-ansible-playbook blog.yml -i localhost:2222,
+ansible-playbook blog.yml -i vagrant_hosts,
 ```
 
 (alternatively you can use `-i .vagrant/provisioners/ansible/inventory/vagrant_ansible_inventory`, but it will log in with the default user for Ubuntu provisioning, not the `{{ admin_user }}` defined on the global vars)
 
-Point the "dev" version of the site to your local machine on `/etc/hosts`, e.g.:
+Run this script to enable development mode (it redirects ports and adds entries to `/etc/hosts`:
 
 ```
-127.0.0.1 dev.chester.me
-127.0.0.1 dev.cruzalinhas.com
-127.0.0.1 dev.totransit.chester.me
+sudo ./config-dev-environment
 ```
 
-and open the site on port 8080 (http://dev.chester.me:8080)
+Now you when you open, say, [http://chester.me](http://chester.me), you will get the Vagrant version, not the public one. Don't forget to run it again (which reverts all changes) as you shutdown your VM!
 
 ### Passwords vault
 
-A few tasks may require you to supply your own [password vault][13]. See [the sample file][14] for details.
-
-### Third party roles
-
-I used to have third party roles downloaded from Ansible Galaxy, but a few tend not to be maintained (or accept patches) very often (and Galaxy itself seems not to be very active - for example, a command to update roles is [two years in the wait](https://github.com/ansible/ansible/issues/6466)). Given the upcoming Ansible 2.0 changes, I followed the advice from experienced sysadmins: moved those roles inside and will eventually internalize their tasks to my particular case.
+A few tasks (including the initial run of each playbook) require you to supply your own [password vault][13]. See [the sample file][14] for details.
 
 ### Maintenance tasks
 
