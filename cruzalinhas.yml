@@ -92,6 +92,10 @@
         - selenium
         - pyvirtualdisplay
 
+    - name: Install the binary W3C WebDriver for Firefox (so Selenium can plug into it)
+      command: bash -lc "cd /usr/local/bin; curl -L {{ cruzalinhas_geckodriver_url }} | tar -xvz"
+      become: yes
+
     - name: Install sptrans data download script
       template: src=templates/download_sptrans_gtfs.py.j2 dest={{ cruzalinhas_download_sptrans_script }} owner={{ admin_user }}
 
