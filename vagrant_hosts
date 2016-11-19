@@ -1,0 +1,5 @@
+[all]
+localhost ansible_port=2222
+
+[vagrant]
+localhost ansible_port=2222
