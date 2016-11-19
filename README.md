@@ -49,10 +49,10 @@ ansible-playbook blog.yml -i vagrant_hosts,
 
 (alternatively you can use `-i .vagrant/provisioners/ansible/inventory/vagrant_ansible_inventory`, but it will log in with the default user for Ubuntu provisioning, not the `{{ admin_user }}` defined on the global vars)
 
-Run this script to enable development mode (it redirects ports and adds entries to `/etc/hosts`:
+To test, run this script (to redirect ports and add entries to `/etc/hosts`):
 
 ```
-sudo ./config-dev-environment
+sudo ./redirect_sites
 ```
 
 Now you when you open, say, [http://chester.me](http://chester.me), you will get the Vagrant version, not the public one. Don't forget to run it again (which reverts all changes) as you shutdown your VM!
