@@ -1,0 +1,26 @@
+#!/bin/bash
+# This script forwards (or stops forwarding) local ports 80/433 to 8080/8043
+# (which Vagrantfile will, on its turn, forward to the VM's 80/433), so we
+# can test the sites on low-numbered ports without running them as root
+
+if [ "$(id -u)" != "0" ]; then
+  echo "This script must be run as root" 1>&2
+  exit 1
+fi
+
+STATUS=`pfctl -s nat -q | grep rdr.*8080 | wc -l`
+
+if [ $STATUS != '0' ]; then
+  pfctl -F all -f /etc/pf.conf
+  echo
+  echo "=== Port forwarding stopped"
+
+else
+  echo "
+    rdr pass inet proto tcp from any to any port 80 -> 127.0.0.1 port 8080
+    rdr pass inet proto tcp from any to any port 443 -> 127.0.0.1 port 8443
+  " | pfctl -ef -
+  echo
+  echo "=== Port forwarding started. Forwarding these:"
+  pfctl -s nat -q
+fi

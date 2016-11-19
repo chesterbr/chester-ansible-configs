@@ -49,7 +49,7 @@ ansible-playbook blog.yml -i vagrant_hosts,
 
 (alternatively you can use `-i .vagrant/provisioners/ansible/inventory/vagrant_ansible_inventory`, but it will log in with the default user for Ubuntu provisioning, not the `{{ admin_user }}` defined on the global vars)
 
-Point the "dev" version of the site to your local machine on `/etc/hosts`, e.g.:
+Then point the "dev" version of the site to your local machine on `/etc/hosts`, e.g.:
 
 ```
 127.0.0.1 dev.chester.me
@@ -57,7 +57,12 @@ Point the "dev" version of the site to your local machine on `/etc/hosts`, e.g.:
 127.0.0.1 dev.totransit.chester.me
 ```
 
-and open the site on port 8080 (http://dev.chester.me:8080)
+Finally, enable forwarding of ports 80/443 to Vagrant (run again or reboot to stop forwarding):
+```
+sudo ./forward_ports_to_vagrant
+```
+
+Now you can open the websites. E.g.: [http://dev.chester.me](http://dev.chester.me)
 
 ### Passwords vault
 
