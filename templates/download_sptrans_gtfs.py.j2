@@ -82,8 +82,10 @@ try:
   driver.find_element_by_id('devPlaceUserName').send_keys(username)
   driver.find_element_by_id('devPlaceUserPass').send_keys(password)
   driver.find_element_by_id('btnDevPlaceLogin').click()
+  time.sleep(5)
 
   driver.find_element_by_id('lnkGoToGTFS').click()
+  time.sleep(5)
 
   driver.find_element_by_id('btDownloadGTFS').click()
 
