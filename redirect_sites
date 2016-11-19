@@ -5,7 +5,7 @@
 #     (which Vagrantfile will, on its turn, forward to the VM's 80/433)
 #   - Adding development site names to /etc/hosts
 #
-# That way, we can test, say, the blog by opening http://dev.chester.me
+# After that, when you open, say, http://chester.me, you will get the local version.
 #
 # Run it again to remove the entries and restore port forwarding to boot-time config
 #
@@ -15,11 +15,17 @@ if [ "$(id -u)" != "0" ]; then
   exit 1
 fi
 
-# TODO: somehow get those from nginx configurations (this list does not include
-# redirects); also review non-dev-m. prefixed sites (and possibly split redirects)
-DEVELOPMENT_SITES="dev.chester.me
-                   dev.cruzalinhas.com
-                   dev.totransit.chester.me"
+# TODO: somehow get those from nginx configurations
+DEVELOPMENT_SITES="chester.me
+                     www.chester.me
+                     m.chester.me
+                     chester.blog.br
+                     www.chester.blog.br
+                   cruzalinhas.com
+                     www.cruzalinhas.com
+                     www.cruzalinhas.com.br
+                     cruzalinhas.com.br
+                   totransit.chester.me"
 
 TAB=$'\t'
 

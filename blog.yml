@@ -18,10 +18,10 @@
         - server:
             file_name: chester.me
             root: "{{ blog_public_dir }}"
-            server_name: chester.me dev.chester.me
+            server_name: chester.me
         - server:
             file_name: redirects.chester.me
-            server_name: www.chester.me m.chester.me m.chester.dev.me chester.blog.br www.chester.blog.br
+            server_name: www.chester.me m.chester.me chester.blog.br www.chester.blog.br
             return: 301 $scheme://chester.me$request_uri
 
     - role: chesterbr.ruby
