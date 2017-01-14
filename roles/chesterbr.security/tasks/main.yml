@@ -37,11 +37,18 @@
     - 50unattended-upgrades
 
 - name: Configure ufw (firewall) rules
+  become: yes
   ufw: rule=allow port={{ item }}
   with_items:
     - 22
     - 80
+    - 443
     - 6912
+  tags:
+    - firewall
 
 - name: Enable ufw and load it on startup; reject any connections not on rules
+  become: yes
   ufw: state=enabled policy=reject
+  tags:
+    - firewall
