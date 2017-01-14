@@ -13,22 +13,22 @@
 
   roles:
     - role: chesterbr.vault
-    - role: chesterbr.nginx
-      nginx_sites:
-        - server:
-            file_name: chester.me
-            root: "{{ blog_public_dir }}"
-            server_name: chester.me
-        - server:
-            file_name: redirects.chester.me
-            server_name: www.chester.me m.chester.me chester.blog.br www.chester.blog.br
-            return: 301 $scheme://chester.me$request_uri
-
     - role: chesterbr.letsencrypt
       webroot: "{{ blog_public_dir }}"
       domains:
         - chester.me
         - www.chester.me
+    - role: chesterbr.nginx
+      nginx_sites:
+        - server:
+            file_name: chester.me
+            root: "{{ blog_public_dir }}"
+            server_name: chester.me dev.chester.me
+            https_server_name: chester.me
+        - server:
+            file_name: redirects.chester.me
+            server_name: www.chester.me m.chester.me chester.blog.br www.chester.blog.br
+            return: 301 $scheme://chester.me$request_uri
     - role: chesterbr.ruby
       ruby_user: "{{ admin_user }}"
 
