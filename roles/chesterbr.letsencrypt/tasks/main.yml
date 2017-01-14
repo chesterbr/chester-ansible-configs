@@ -1,0 +1,18 @@
+- name: Install the letsencrypt package
+  become: yes
+  apt: name=letsencrypt state=present
+
+- name: Obtain certificates for selected sites (only if running on production server)
+  become: yes
+  shell: bash -lc "letsencrypt certonly -m {{ admin_email }} --keep-until-expiring --agree-tos --webroot -w {{ webroot }} -d {{ domains | join(' -d ') }}"
+  when: "'production' in group_names"
+
+- name: Ensure ssl directory exists (development-only; prod will use letsencypt)
+  become: yes
+  file: path=/etc/nginx/ssl state=directory
+  when: "'vagrant' in group_names"
+
+- name: Generate self-signed certificate (development-only; prod will use letsencypt)
+  become: yes
+  command: openssl req -new -nodes -x509 -subj "/C=US/ST=Oregon/L=Portland/O=IT/CN=${ansible_fqdn}" -days 3650 -keyout /etc/nginx/ssl/privkey.pem -out /etc/nginx/ssl/fullchain.pem -extensions v3_ca creates=/etc/nginx/ssl/fullchain.pem
+  when: "'vagrant' in group_names"
