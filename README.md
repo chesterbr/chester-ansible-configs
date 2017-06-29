@@ -60,6 +60,12 @@ Now you can open, say, [http://dev.chester.me](http://dev.chester.me).
 
 A few tasks (including the initial run of each playbook) require you to supply your own [password vault][13]. See [the sample file][14] for details.
 
+### Production provisioning
+
+Initial server setup is done by running `provisioning.yml` with the root user (`-u root`) against the proper host (one of its tasks is to create the proper user, then disable root and password-based logins).
+
+Once that is done, playbooks may be ran on the proper hosts. Currently I ran all of them on the same host, but they can theoretically live in different machines.
+
 ### Maintenance tasks
 
 Those are tagged on the playbooks, please check them for such tags and add to `ansible-playbook`. Examples:
