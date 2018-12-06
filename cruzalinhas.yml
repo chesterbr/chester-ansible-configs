@@ -68,14 +68,19 @@
       lineinfile: dest=~/.profile line="export SECRET_KEY_BASE={{ cruzalinhas_secret_key_base }}" regexp="^export SECRET_KEY_BASE"
 
     - name: "Install ruby required by the code (e.g.: .ruby_version)"
-      shell: bash -lc "cd {{ cruzalinhas_checkout_dir }}; rbenv install"
+      shell: bash -lc "cd {{ cruzalinhas_checkout_dir }}; CONFIGURE_OPTS=\"--disable-install-rdoc\" rbenv install"
       register: ruby_install_result
       failed_when: ruby_install_result.rc != 0 and not (ruby_install_result.stderr | search('^rbenv.*versions.*already exists$'))
+      notify: restart app
+      tags:
+        - update_app
 
     - name: Ensure we have all gem dependencies for cruzalinhas
       command: bash -lc "cd {{ cruzalinhas_checkout_dir }}; gem install bundle; bundle install"
       register: bundler
       changed_when: '"Installing" in bundler.stdout'
+      tags:
+        - update_app
 
     - name: Configures cruzalinhas back-end to run under supervisor (from source dir)
       template: src=templates/cruzalinhas.conf.supervisor.j2 dest=/etc/supervisor/conf.d/cruzalinhas.conf
