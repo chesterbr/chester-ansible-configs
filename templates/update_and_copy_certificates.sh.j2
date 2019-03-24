@@ -1,0 +1,15 @@
+#!/bin/bash
+set -e
+
+# Refresh certbot certificates (if needed)
+# and copy them to where HomeAssistant (running under my user)
+# will see them
+
+if [ ! -f /etc/letsencrypt/live/{{ external_hostname }} ]; then
+  certbot certonly --standalone --preferred-challenges http -d {{ external_hostname }} --agree-tos -m {{ admin_email }} -n
+else
+  certbot renew --standalone --preferred-challenges http -n
+fi
+cp /etc/letsencrypt/live/{{ external_hostname }}/fullchain.pem /home/{{ admin_user }}/
+cp /etc/letsencrypt/live/{{ external_hostname }}/privkey.pem /home/{{ admin_user }}/
+chown {{ admin_user }}:{{ admin_user }} /home/{{ admin_user }}/*.pem

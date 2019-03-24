@@ -1,0 +1,42 @@
+# Initial configuration for the Raspberry Pi that handles my home automation
+#
+# This playbook just ensures I have my user there, that it is a sudoer and
+# that I can ssh with my own key, so I can use it for all other tasks
+# in the main playbook (rpi.yml).
+#
+# Given it will likely be ran when an image was freshly baked, we also
+# use the opportunity to bump all packages to latest and give it a good
+# reboot, so it's ready to rumble
+#
+# To start:
+#   - Download Raspbian lite image and burn with balenaEtecher (or dd)
+#   - Create empty SSH file and wpa_supplicant.conf on boot volume
+#   - Run it with the command below, supply the pi's default password (raspberry)
+#        ansible-playbook rpi_provisioning.yml -i hosts -k
+#
+# TODO hint for redoing: ssh-keygen -R 192.168.2.100
+# TODO put command for provisioning here
+
+- hosts: raspberrypi
+  remote_user: pi
+  become: yes
+  become_method: sudo
+  vars:
+    admin_user: chesterbr
+    admin_user_key: https://github.com/chesterbr.keys
+
+  roles:
+  - chesterbr.user_setup
+
+  tasks:
+  - name: Update packages info
+    apt: update_cache=yes
+
+  - name: Bump all packages to latest within distro
+    apt: upgrade=dist
+
+  - name: Remove unneeded packages
+    apt: autoremove=yes
+
+  - name: Reboot
+    reboot:

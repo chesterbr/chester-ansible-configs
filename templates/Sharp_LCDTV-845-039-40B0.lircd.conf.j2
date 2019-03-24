@@ -1,0 +1,81 @@
+# Please take the time to finish this file as described in
+# https://sourceforge.net/p/lirc-remotes/wiki/Checklist/
+# and make it available to others by sending it to
+# <lirc@bartelmus.de>
+#
+# This config file was automatically generated
+# using lirc-0.9.4c(default) on Thu Dec  7 01:17:39 2017
+# Command line used: --disable-namespace -d /dev/lirc0 /home/chester/lircd.conf
+# Kernel version (uname -r): 4.9.59+
+#
+# Remote name (as of config file): Sharp_LCDTV-845-039-40B0
+# Brand of remote device, the thing you hold in your hand: Sharp
+# Remote device model nr: 845-039-40B0
+# Remote device info url: https://www.amazon.ca/Sharp-845-039-40b0-Replacement-Remote-Control/dp/B00M99H0MG
+# Does remote device has a bundled capture device e. g., a
+#     usb dongle? : No
+# For bundled USB devices: usb vendor id, product id
+#     and device string (use dmesg or lsusb):
+# Type of device controlled
+#     (TV, VCR, Audio, DVD, Satellite, Cable, HTPC, ...) : TV
+# Device(s) controlled by this remote: Sharp LC-40LE431U LC-60E69U LC-40LE433U LC-40LE431U LC-60E69 LC-40LE431 LC-40LE431UA LC-40LE433 LC-40LE433UA
+# Tested with LC-40LE431U (others come from online info)
+# Device info (includes manual with remote device info): http://www.sharpusa.com/Support/ProductDetail.aspx?model=LC-40LE431U
+begin remote
+
+  name  Sharp_LCDTV-845-039-40B0
+  bits           15
+  flags SPACE_ENC|CONST_LENGTH
+  eps            30
+  aeps          100
+
+  one           332  1794
+  zero          332   728
+  ptrail        331
+  gap          67951
+  toggle_bit_mask 0x0
+  toggle_mask    0x3FF
+  frequency    38000
+
+      begin codes
+          KEY_POWER                0x41A2
+          INPUT                    0x4322
+          KEY_1                    0x4202
+          KEY_2                    0x4102
+          KEY_3                    0x4302
+          KEY_4                    0x4082
+          KEY_5                    0x4282
+          KEY_6                    0x4182
+          KEY_7                    0x4382
+          KEY_8                    0x4042
+          KEY_9                    0x4242
+          KEY_DOT                  0x4572
+          ENT                      0x4342
+          FLASHBACK                0x43D2
+          FREEZE                   0x432A
+          KEY_AUDIO                0x4062
+          DISPLAY                  0x4362
+          KEY_MENU                 0x4012
+          KEY_CHANNELUP            0x4222
+          KEY_CHANNELDOWN          0x4122
+          KEY_VOLUMEUP             0x40A2
+          KEY_VOLUMEDOWN           0x42A2
+          KEY_MUTE                 0x43A2
+          KEY_TV                   0x4032
+          KEY_PC                   0x3E06
+          VIEW_MODE                0x4016
+          AV_MODE                  0x407E
+          KEY_UP                   0x43AA
+          KEY_LEFT                 0x42BE
+          KEY_ENTER                0x43BE
+          KEY_RIGHT                0x41BE
+          KEY_DOWN                 0x406A
+          KEY_EXIT                 0x433E
+          RETURN                   0x40BE
+          KEY_SLEEP                0x4162
+          CC                       0x414A
+          ADD_ERASE                0x45E2
+          FAV                      0x47C6
+      end codes
+
+end remote
