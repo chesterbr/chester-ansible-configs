@@ -14,8 +14,3 @@
     line: '{{ admin_user }} ALL=(ALL) NOPASSWD: ALL'
     state: present
     validate: 'visudo -cf %s'
-
-- name: Install utilities that make admin's life easier
-  apt: name={{ item }} state=installed
-  with_items:
-    - htop
