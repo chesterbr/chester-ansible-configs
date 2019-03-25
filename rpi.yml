@@ -32,6 +32,7 @@
     vars:
       packages:
         - git
+        - python3-gpiozero
 
   - name: Install fail2ban.
     apt: name=fail2ban state=present
@@ -155,6 +156,7 @@
       - user: name="{{ admin_user }}" groups=gpio append=yes
 
   - name: Install and configure LIRC (infrared), using GPIO22 for output and GPIO23 for input
+    tags: foo
     block:
       - apt: name=lirc state=present
       - lineinfile:
@@ -164,10 +166,10 @@
            state: present
         notify: reboot
       - blockinfile:
-           dest: /etc/modules
-           block:
-             lirc_dev
-             lirc_rpi gpio_in_pin=23 gpio_out_pin=22
+          dest: /etc/modules
+          block: |
+            lirc_dev
+            lirc_rpi gpio_in_pin=23 gpio_out_pin=22
         notify: reboot
       - template:
           src: templates/lirc_hardware_conf.j2
@@ -175,6 +177,11 @@
           owner: root
         notify: restart lirc
       - template:
+          src: templates/lirc_options.conf.j2
+          dest: /etc/lirc/lirc_options.conf
+          owner: root
+        notify: restart lirc
+      - template:
           src: Sharp_LCDTV-845-039-40B0.lircd.conf.j2
-          dest: /etc/lirc/lircd.conf.d/
+          dest: /etc/lirc/lircd.conf.d/Sharp_LCDTV-845-039-40B0.lircd.conf
         notify: restart lirc

@@ -1,0 +1,18 @@
+[lircd]
+nodaemon = False
+driver = default
+device = /dev/lirc0
+output = /var/run/lirc/lircd
+pidfile = /var/run/lirc/lircd.pid
+plugindir = /usr/lib/arm-linux-gnueabihf/lirc/plugins
+permission = 666
+allow-simulate = No
+repeat-max = 600
+uinput = True
+
+[lircmd]
+uinput = False
+nodaemon = False
+
+[modinit]
+code = modprobe lirc_rpi
