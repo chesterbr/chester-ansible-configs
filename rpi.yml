@@ -12,7 +12,7 @@
     external_hostname: chesterbr.duckdns.org
   handlers:
   - name: restart ssh
-    service: name=sshd state=restarted
+    service: name=ssh state=restarted
 
   - name: restart unattended-upgrades
     service: name=unattended-upgrades state=restarted
