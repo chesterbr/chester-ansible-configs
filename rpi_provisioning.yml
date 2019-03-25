@@ -8,14 +8,20 @@
 # use the opportunity to bump all packages to latest and give it a good
 # reboot, so it's ready to rumble
 #
-# To start:
-#   - Download Raspbian lite image and burn with balenaEtecher (or dd)
-#   - Create empty SSH file and wpa_supplicant.conf on boot volume
-#   - Run it with the command below, supply the pi's default password (raspberry)
+# To (re)start:
+#   - Ensure your router is redirecting desired ports (80, 443, 8123) to
+#     this RPi's network adaptor, and that it has a fixed IP
+#   - Make your computer forget about old versions of that IP:
+#     ssh-keygen -R IP
+#   - Download Raspbian lite image and burn to SD with balenaEtecher (or dd)
+#   - Before putting the SD card on RPi, mount it and:
+#     - Create empty SSH file (touch /Volumes/boot/SSH)
+#     - Create wpa_supplicant.conf
+#       (model here: https://raspberrypi.stackexchange.com/a/82923/100572)
+#   - Unmount, put on RPi and boot it
+#   - Wait a bit (it will cycle-boot at least once), then and run the command
+#     below (password is raspberry):
 #        ansible-playbook rpi_provisioning.yml -i hosts -k
-#
-# TODO hint for redoing: ssh-keygen -R 192.168.2.100
-# TODO put command for provisioning here
 
 - hosts: raspberrypi
   remote_user: pi
