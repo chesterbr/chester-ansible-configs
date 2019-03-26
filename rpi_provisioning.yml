@@ -4,9 +4,9 @@
 # that I can ssh with my own key, so I can use it for all other tasks
 # in the main playbook (rpi.yml).
 #
-# Given it will likely be ran when an image was freshly baked, we also
-# use the opportunity to bump all packages to latest and give it a good
-# reboot, so it's ready to rumble
+# Given it will likely be ran when an image was freshly baked, we also use the
+# opportunity to bump all packages to latest in distro, configure my chosen
+# hostname and give it a good reboot, so it's ready to rumble
 #
 # To (re)start:
 #   - Ensure your router is redirecting desired ports (80, 443, 8123) to
@@ -30,19 +30,25 @@
   vars:
     admin_user: chesterbr
     admin_user_key: https://github.com/chesterbr.keys
+    host: tv-pi
 
   roles:
   - chesterbr.user_setup
 
   tasks:
-  - name: Update packages info
-    apt: update_cache=yes
+  - name: Update all packages to latest within distro, then remove unneeded
+    block:
+      apt: update_cache=yes upgrade=dist
+      apt: autoremove=yes
 
-  - name: Bump all packages to latest within distro
-    apt: upgrade=dist
-
-  - name: Remove unneeded packages
-    apt: autoremove=yes
+  - name: Configure the hostname
+    block:
+      - replace:
+          dest: "/etc/hosts"
+          regexp: "raspberrypi"
+          replace: "{{ host }}"
+      - hostname:
+          name: "{{ host }}"
 
   - name: Reboot
     reboot:

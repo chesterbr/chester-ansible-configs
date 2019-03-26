@@ -8,7 +8,6 @@
   vars:
     admin_user: chesterbr
     admin_email: cd@pobox.com
-    host: tv-pi
     external_hostname: chesterbr.duckdns.org
     living_room_light_mac: !vault |
               $ANSIBLE_VAULT;1.1;AES256
