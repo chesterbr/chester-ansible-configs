@@ -11,15 +11,16 @@
 # To (re)start:
 #   - Ensure your router is redirecting desired ports (80, 443, 8123) to
 #     this RPi's network adaptor, and that it has a fixed IP
-#   - Make your computer forget about old versions of that IP:
-#     ssh-keygen -R IP
+#   - Make your computer forget about old versions of that ip/hostname:
+#       ssh-keygen -R 1.2.3.4
+#       ssh-keygen -R hostname
 #   - Download Raspbian lite image and burn to SD with balenaEtecher (or dd)
 #   - Before putting the SD card on RPi, mount it and:
 #     - Create empty SSH file (touch /Volumes/boot/SSH)
 #     - Create wpa_supplicant.conf
 #       (model here: https://raspberrypi.stackexchange.com/a/82923/100572)
 #   - Unmount, put on RPi and boot it
-#   - Wait a bit (it will cycle-boot at least once), then and run the command
+#   - Wait a bit (it will cycle-boot at least once), then run the command
 #     below (password is raspberry):
 #        ansible-playbook rpi_provisioning.yml -i hosts -k
 
@@ -38,8 +39,8 @@
   tasks:
   - name: Update all packages to latest within distro, then remove unneeded
     block:
-      apt: update_cache=yes upgrade=dist
-      apt: autoremove=yes
+      - apt: update_cache=yes upgrade=dist
+      - apt: autoremove=yes
 
   - name: Configure the hostname
     block:

@@ -79,10 +79,9 @@
         - python3-gpiozero  # Provides pinout (and I ❤️ pinout)
 
   - name: Install fail2ban.
-    apt: name=fail2ban state=present
-
-  - name: Ensure fail2ban is running and enabled on boot.
-    service: name=fail2ban state=started enabled=yes
+    block:
+      - apt: name=fail2ban state=present
+      - service: name=fail2ban state=started enabled=yes
 
   - name: Update SSH configuration to be more secure (no password/root logins).
     lineinfile:
@@ -97,7 +96,7 @@
         line: "PermitRootLogin no"
     notify: restart ssh
 
-  # Uncomment if you don't want the local pi user (e.g., if RPI isn't physically secure)
+  # Uncomment if you don't want the local pi user
   # - name: Drop the pi user (we don't need it and can't even use it remotely at this point)
   #   user: name={{ admin_user }} state=absent remove=yes
 
@@ -149,8 +148,7 @@
   - name: Install certbot (so we can have letsencrypt ssl certificates)
     apt: name=certbot state=present
 
-  - name: Create script that generates/renews (and copies to the right place)
-          certificates as needed
+  - name: Create script that generates/renews/copies certificates as needed
     template:
       src: templates/update_and_copy_certificates.sh.j2
       dest: /root/update_and_copy_certificates.sh
@@ -160,7 +158,7 @@
   - name: Run the script once (so we have certificates to play with)
     command: bash -lc "/root/update_and_copy_certificates.sh"
 
-  - name: Schedule cercertbot to rebuild the certs when needed \
+  - name: Schedule certbot to rebuild the certs when needed \
           (and copy/fix perms so HomeAssistant can use them)
     cron:
       name: Update ssl certificates
@@ -229,7 +227,7 @@
           dest: /etc/lirc/lircd.conf.d/Sharp_LCDTV-845-039-40B0.lircd.conf
         notify: restart lirc
 
-  - name: Provision Home Assistant configuration and secrets
+  - name: Provision (or update) Home Assistant configuration and secrets
     tags: update_ha_configs
     block:
     - copy:
