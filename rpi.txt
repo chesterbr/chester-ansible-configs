@@ -43,3 +43,8 @@ CONTINUE FROM HERE
     - sudo systemctl daemon-reload
     - sudo systemctl enable homeassistant.service
   - /home/chesterbr/tv_source.lua (chmod +x)
+
+- hostname comofas
+  # - hostname:
+  #     name: {{ host }}
+  isso não configura o /etc/hosts

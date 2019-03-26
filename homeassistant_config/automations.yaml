@@ -1,0 +1,13 @@
+- id: '1552799947083'
+  alias: Unlock Door
+  trigger:
+  - entity_id: device_tracker.pixel_2_xl
+    from: not_home
+    platform: state
+    to: home
+  condition: []
+  action:
+  - alias: ''
+    data:
+      entity_id: switch.living_room_spot
+    service: switch.turn_on

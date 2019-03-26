@@ -13,6 +13,7 @@
 
   roles:
     - role: chesterbr.vault
+      tags: foo
     - role: chesterbr.nginx
       nginx_sites:
         - server:

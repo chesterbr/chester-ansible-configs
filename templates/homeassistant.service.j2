@@ -1,0 +1,13 @@
+[Unit]
+Description=Home Assistant
+After=multi-user.target
+
+[Service]
+Type=simple
+ExecStart=/home/{{ admin_user }}/homeassistant/bin/hass
+Restart=on-abort
+User={{ admin_user }}
+Group={{ admin_user }}
+
+[Install]
+WantedBy=multi-user.target

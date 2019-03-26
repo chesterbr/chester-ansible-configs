@@ -75,8 +75,9 @@
     apt: name={{ packages }} state=present
     vars:
       packages:
-        - git
-        - python3-gpiozero
+        - git               # Required for Ansible git (and for life, IMHO)
+        - python-setuptools # Required for Ansible pip ¯\_(ツ)_/¯
+        - python3-gpiozero  # Provides pinout (and I ❤️ pinout)
 
   - name: Install fail2ban.
     apt: name=fail2ban state=present
@@ -229,8 +230,48 @@
           dest: /etc/lirc/lircd.conf.d/Sharp_LCDTV-845-039-40B0.lircd.conf
         notify: restart lirc
 
-  - name: Provision Home Assistant secrets (from my Ansible Vault)
-    template:
-      src: templates/homeassistant.secrets.yaml.j2
-      dest: /home/{{ admin_user }}/.homeassistant/secrets.yaml
-      owner: root
+  - name: Provision Home Assistant configuration and secrets
+    tags: update_ha_configs
+    block:
+    - copy:
+        src: homeassistant_config/
+        dest: /home/{{ admin_user }}/.homeassistant/
+        owner: "{{ admin_user }}"
+        group: "{{ admin_user }}"
+        mode: 0600
+    - template:
+        src: templates/homeassistant.secrets.yaml.j2
+        dest: /home/{{ admin_user }}/.homeassistant/secrets.yaml
+        owner: "{{ admin_user }}"
+        group: "{{ admin_user }}"
+        mode: 0600
+
+  - name: Install Home Assistant (on a virtualenv, on my user)
+    block:
+      - apt: name={{ packages }} state=present
+        vars:
+          packages:
+            - python3-pip
+            - python3-venv
+            - build-essential
+            - libssl-dev
+            - libffi-dev
+            - python3-dev
+      - pip:
+          name: virtualenv
+          executable: pip3
+      - pip:
+          name:
+            - wheel
+            - homeassistant
+          virtualenv: /home/{{ admin_user }}/homeassistant
+        become: no
+      - template:
+          src: templates/homeassistant.service.j2
+          dest: /lib/systemd/system/homeassistant.service
+          mode: 0644
+      - systemd:
+          daemon_reload: yes
+          name: homeassistant.service
+          enabled: true
+          state: started
