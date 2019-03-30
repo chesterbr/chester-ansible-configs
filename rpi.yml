@@ -255,4 +255,5 @@
           daemon_reload: yes
           name: homeassistant.service
           enabled: true
-          state: started
+          state: stopped
+          notify: reboot
