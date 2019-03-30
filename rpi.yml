@@ -126,6 +126,8 @@
 
   - name: Run the script once (so we have certificates to play with)
     command: bash -lc "/root/update_and_copy_certificates.sh"
+    args:
+      creates: /home/{{ admin_user }}/privkey.pem
 
   - name: Schedule certbot to rebuild the certs when needed \
           (and copy/fix perms so HomeAssistant can use them)
