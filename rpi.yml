@@ -224,7 +224,7 @@
           name: Backup homeassistant configs
           minute: 0
           hour: 2
-          user: {{ admin_user }}
+          user: "{{ admin_user }}"
           job: /home/{{ admin_user }}/ha-backup.sh
 
   - name: Install Home Assistant (on a virtualenv, on my user)
