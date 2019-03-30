@@ -145,7 +145,14 @@
         - bluez-firmware
         - libbluetooth-dev
 
-  - name: Build and install RF (433Mhz) control software, then enable our user to run it
+  - name: Check if we have already built 433Utils
+    stat:
+      path: /usr/bin/codesend
+    register: codesend
+
+  - name: Build and install RF (433Mhz) control software (433Utils), \
+          then enable my user to run it
+    when: codesend.stat.exists == false
     block:
       - apt: name=wiringpi state=present
       - git:
