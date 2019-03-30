@@ -184,17 +184,20 @@
       - template:
           src: templates/lirc_hardware_conf.j2
           dest: /etc/lirc/hardware.conf
-          owner: root
         notify: restart lirc
       - template:
           src: templates/lirc_options.conf.j2
           dest: /etc/lirc/lirc_options.conf
-          owner: root
         notify: restart lirc
       - template:
           src: templates/Sharp_LCDTV-845-039-40B0.lircd.conf.j2
           dest: /etc/lirc/lircd.conf.d/Sharp_LCDTV-845-039-40B0.lircd.conf
         notify: restart lirc
+      - template:
+          src: templates/tv_source.lua.j2
+          dest: /home/{{ admin_user }}/tv_source.lua
+          mode: 0700
+          owner: "{{ admin_user }}"
 
   - name: Configure Home Assistant backups
     block:

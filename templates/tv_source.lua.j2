@@ -1,0 +1,42 @@
+#!/usr/bin/lua
+
+-- Just quickly copied this from my early hack. Should probably
+-- migrate into Home Assistant (possibly keeping the state of
+-- the input for faster switching?)
+
+validate_int = function(number_string, min, max)
+  value = tonumber(number_string)
+  if value and value == math.floor(value) and value >= min and value <= max then
+    return value
+  end
+end
+
+-- Sources on the INPUT menu: TV, AV, YPBPR, HDMI1, HDMI2, HDMI3, PC
+-- We can only go directly to PC (7), so we navigate the shortest path
+-- (considering the menu wraps around)
+tv_source = function(number)
+  keys  = { "DOWN", "DOWN", "DOWN", "UP", "UP", "UP", nil }
+  times = { 1, 2, 3, 3, 2, 1, 0 }
+  number = validate_int(number, 1, 7)
+  if not number then return end
+  cmd = "irsend SEND_ONCE Sharp_LCDTV-845-039-40B0 KEY_PC; sleep 2; "
+  if times[number] > 0 then
+    cmd = cmd .. "irsend SEND_ONCE Sharp_LCDTV-845-039-40B0 INPUT; sleep 0.2; "
+    for i=1,times[number] do
+      cmd = cmd .. "irsend SEND_ONCE Sharp_LCDTV-845-039-40B0 KEY_" .. keys[number] .. "; sleep 0.3; "
+    end
+    cmd = cmd .. "irsend SEND_ONCE Sharp_LCDTV-845-039-40B0 KEY_ENTER"
+  end
+  os.execute(cmd)
+end
+
+source_by_name_tbl =
+{
+  ["tv"] = 1,
+  ["atari"] = 2,
+  ["chromecast"] = 4,
+  ["switch"] = 5,
+  ["bell"] = 6
+}
+
+tv_source(arg[1])
