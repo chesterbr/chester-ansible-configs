@@ -218,7 +218,7 @@
       - command: bash -lc "./ha-backup.sh restore"
         args:
           chdir: /home/{{ admin_user }}
-          creates: /home/{{ admin_user }}/homeassistant
+          creates: /home/{{ admin_user }}/.homeassistant
         become: no
       - cron:
           name: Backup homeassistant configs
