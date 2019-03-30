@@ -139,8 +139,8 @@
           dest: /root/duck.sh
           mode: 0700
       - cron:
-          name: Update ssl certificates
-          minute: "*/10"
+          name: Refresh DuckDNS address
+          minute: "*/5"
           job: /root/duck.sh
 
   - name: Run the script once (so we have certificates to play with)
