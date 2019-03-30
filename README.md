@@ -24,7 +24,7 @@ An app that allows quickly finding public transportation routes in São Paulo. S
 
 ### Home automation Raspberry Pi
 
-I used my RPi to add voice control to my [lights](https://chester.me/archives/2017/12/controlling-rf-outlets-from-a-raspberry-pi/) and [TV](https://chester.me/archives/2017/12/voice-control-for-a-non-smart-tv-with-google-home-raspberry-pi-lirc-nginx-lua-ifttt/). I added plabooks to [provision](rpi_provisioning.txt) it and [configure the apps](rpi.txt), so I can tinker with confidence.
+I used my RPi to add voice control to my [lights](https://chester.me/archives/2017/12/controlling-rf-outlets-from-a-raspberry-pi/) and [TV](https://chester.me/archives/2017/12/voice-control-for-a-non-smart-tv-with-google-home-raspberry-pi-lirc-nginx-lua-ifttt/). I added plabooks to [provision](rpi_provisioning.yml) it and [configure the apps](rpi.yml), so I can tinker with confidence.
 
 ### Toronto Transit for Pebble
 
