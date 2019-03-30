@@ -133,7 +133,6 @@
       name: Update ssl certificates
       minute: 0
       hour: 4
-      weekday: 0 # Sundays
       user: root
       job: /root/update_and_copy_certificates.sh
 
