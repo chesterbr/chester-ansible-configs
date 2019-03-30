@@ -217,11 +217,6 @@
           dest: /home/{{ admin_user }}/ha-backup.sh
           mode: 0700
         become: no
-      - command: bash -lc "./ha-backup.sh restore"
-        args:
-          chdir: /home/{{ admin_user }}
-          creates: /home/{{ admin_user }}/.homeassistant
-        become: no
       - cron:
           name: Backup homeassistant configs
           minute: 0
@@ -229,8 +224,20 @@
           user: "{{ admin_user }}"
           job: /home/{{ admin_user }}/ha-backup.sh
 
-  - name: Install Home Assistant (on a virtualenv, on my user)
+  - name: Check if Home Assistant (config) is present...
+    stat:
+      path: /home/{{ admin_user }}/.homeassistant
+    register: homeassistant_config
+
+  - name: ...if not, restore config from backup and install Home Assistant \
+             (on a virtualenv, on my user, with configs from backup)
+    when: homeassistant_config.stat.exists == false
     block:
+      - command: bash -lc "./ha-backup.sh restore"
+        args:
+          chdir: /home/{{ admin_user }}
+          creates: /home/{{ admin_user }}/.homeassistant
+        become: no
       - apt: name={{ packages }} state=present
         vars:
           packages:
