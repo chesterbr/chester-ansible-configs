@@ -6,7 +6,7 @@
 #
 # Given it will likely be ran when an image was freshly baked, we also use the
 # opportunity to bump all packages to latest in distro, configure my chosen
-# hostname and give it a good reboot, so it's ready to rumble
+# hostname/timezone and give it a good reboot, so it's ready to rumble
 #
 # To (re)start:
 #   - Ensure your router is redirecting desired ports (80, 443) to
@@ -52,6 +52,10 @@
           replace: "{{ host }}"
       - hostname:
           name: "{{ host }}"
+
+  - name: Configure timezone
+    timezone:
+      name: America/Toronto
 
   - name: Reboot
     reboot:
