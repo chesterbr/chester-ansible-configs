@@ -44,6 +44,12 @@
     reboot:
 
   tasks:
+  - name: Add my user to all groups that pi normally belongs to
+    user:
+      name: "{{ admin_user }}"
+      groups: pi,adm,dialout,cdrom,sudo,audio,video,plugdev,games,users,input,netdev,gpio,i2c,spi
+      append: yes
+
   - name: Update packages info (if older than a couple days)
     apt: update_cache=yes cache_valid_time=7200
 
@@ -54,6 +60,7 @@
         - git               # Required for Ansible git (and for life, IMHO)
         - python-setuptools # Required for Ansible pip ¯\_(ツ)_/¯
         - python3-gpiozero  # Provides pinout (and I ❤️ pinout)
+        - libudev-dev       # Not 100% sure, but Home Assistant + ZWave seems to require it
 
   - name: Install fail2ban.
     block:
@@ -190,7 +197,6 @@
         with_items:
           - codesend
           - RFSniffer
-      - user: name="{{ admin_user }}" groups=gpio append=yes
 
   - name: Install and configure LIRC (infrared), using GPIO22 for output and GPIO23 for input
     block:
