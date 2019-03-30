@@ -9,8 +9,10 @@
 # hostname and give it a good reboot, so it's ready to rumble
 #
 # To (re)start:
-#   - Ensure your router is redirecting desired ports (80, 443, 8123) to
-#     this RPi's network adaptor, and that it has a fixed IP
+#   - Ensure your router is redirecting desired ports (80, 443) to
+#     this RPi's network adaptor, and that it has a fixed IP.
+#     (We'll also need 8123 for Home Assistant, but I'd only open that
+#      once a password is set, which will happen on first login)
 #   - Make your computer forget about old versions of that ip/hostname:
 #       ssh-keygen -R 1.2.3.4
 #       ssh-keygen -R hostname
