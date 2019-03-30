@@ -167,7 +167,6 @@
       - user: name="{{ admin_user }}" groups=gpio append=yes
 
   - name: Install and configure LIRC (infrared), using GPIO22 for output and GPIO23 for input
-    tags: foo
     block:
       - apt: name=lirc state=present
       - lineinfile:
@@ -256,4 +255,4 @@
           name: homeassistant.service
           enabled: true
           state: stopped
-          notify: reboot
+        notify: reboot
