@@ -22,6 +22,14 @@
               61313535626434633164356430383135386533613231346566373536323934623364326166396364
               37623030636230393637666636383839633461356235656462616132666264333663656435326334
               376631333062666237336238303630623033
+    duckdns_token: !vault |
+              $ANSIBLE_VAULT;1.1;AES256
+              30626238633131363461363936396234316334306531623366393931663433313065396330343437
+              3635386336633039663232393165336334316665663533640a366564663366313662636532376530
+              35363032326132636432386434333831363733346363626436396361396261306265393030666238
+              6261613764323161320a623239396135663163306438613839326638626236336161323932373335
+              31653637393635376165653064336565306262303332303432376638633365626431663637636566
+              3464623366386333636231663736383932623865336663656531
   handlers:
   - name: restart ssh
     service: name=ssh state=restarted
@@ -124,6 +132,17 @@
       owner: root
       mode: 0700
 
+  - name: Configure dynamic DNS provider (DuckDNS)
+    block:
+      - template:
+          src: templates/duck.sh.j2
+          dest: /root/duck.sh
+          mode: 0700
+      - cron:
+          name: Update ssl certificates
+          minute: "*/10"
+          job: /root/duck.sh
+
   - name: Run the script once (so we have certificates to play with)
     command: bash -lc "/root/update_and_copy_certificates.sh"
     args:
@@ -135,7 +154,6 @@
       name: Update ssl certificates
       minute: 0
       hour: 4
-      user: root
       job: /root/update_and_copy_certificates.sh
 
   - name: Install packages required for Bluetooth
