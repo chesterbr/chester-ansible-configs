@@ -228,7 +228,7 @@
       - cron:
           name: Backup homeassistant configs
           minute: 0
-          hour: 2
+          hour: 3
           user: "{{ admin_user }}"
           job: /home/{{ admin_user }}/ha-backup.sh
 
