@@ -1,0 +1,27 @@
+#!/bin/bash
+rm /tmp/ha-backup.tar.gz.gpg
+if [ "$1" == "restore" ]; then
+  echo "Restoring..."
+  smbclient '\\mynetwork\flash' -U guest% -c "
+    cd ha-backups;
+    lcd /tmp;
+    get ha-backup.tar.gz.gpg;
+  "
+  mkdir ~/.homeassistant
+  cd ~/.homeassistant
+  cat /tmp/ha-backup.tar.gz.gpg |
+    gpg -d --batch --passphrase-file /home/{{ admin_user }}/.backup-password -o - |
+    tar -xz
+else
+  echo "Backing up..."
+  tar -cz -C /home/{{ admin_user }}/.homeassistant . | gpg -c --batch --passphrase-file /home/{{ admin_user }}/.backup-password -o /tmp/ha-backup.tar.gz.gpg
+  timestamp=`date +'%Y-%m-%d'`
+  smbclient '\\mynetwork\flash' -U guest% -c "
+    mkdir ha-backups;
+    cd ha-backups;
+    lcd /tmp;
+    put ha-backup.tar.gz.gpg;
+    put ha-backup.tar.gz.gpg ${timestamp}-ha-backup.tar.gz.gpg;
+  "
+fi
+rm /tmp/ha-backup.tar.gz.gpg

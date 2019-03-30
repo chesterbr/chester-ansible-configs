@@ -9,6 +9,19 @@
     admin_user: chesterbr
     admin_email: cd@pobox.com
     external_hostname: chesterbr.duckdns.org
+    backup_password: !vault |
+              $ANSIBLE_VAULT;1.1;AES256
+              32333432316339373564633937666663323762323834356135396163343361653732346637386365
+              3266636330393331636436393936633035383539616535390a306163346136353464636366373938
+              34626237613062626636653366346363653662393439613839363661376235363162643939346332
+              3265386661626665360a666662336663363265383066623439323061623737336439366335393032
+              37323364626232333262663065666430386436336161633565353963663263336537323863623361
+              34333136323362343562623338396537363531343530366236323666356536386363316638323038
+              66326134636339393761336337633731636631613030386438303230323965653333383239356339
+              63643530626335636561633238316630373665393438633861356563306434613462663665346666
+              61313535626434633164356430383135386533613231346566373536323934623364326166396364
+              37623030636230393637666636383839633461356235656462616132666264333663656435326334
+              376631333062666237336238303630623033
   handlers:
   - name: restart ssh
     service: name=ssh state=restarted
@@ -180,9 +193,39 @@
           owner: root
         notify: restart lirc
       - template:
-          src: Sharp_LCDTV-845-039-40B0.lircd.conf.j2
+          src: templates/Sharp_LCDTV-845-039-40B0.lircd.conf.j2
           dest: /etc/lirc/lircd.conf.d/Sharp_LCDTV-845-039-40B0.lircd.conf
         notify: restart lirc
+
+  - name: Configure Home Assistant backups
+    block:
+      - apt: name={{ packages }} state=present
+        vars:
+          packages:
+            - samba-common
+            - smbclient
+            - samba-common-bin
+            - cifs-utils
+      - copy:
+          content: "{{ backup_password }}"
+          dest: /home/{{ admin_user }}/.backup-password
+        become: no
+      - template:
+          src: templates/ha-backup.sh.j2
+          dest: /home/{{ admin_user }}/ha-backup.sh
+          mode: 0700
+        become: no
+      - command: bash -lc "./ha-backup.sh restore"
+        args:
+          chdir: /home/{{ admin_user }}
+          creates: /home/{{ admin_user }}/homeassistant
+        become: no
+      - cron:
+          name: Backup homeassistant configs
+          minute: 0
+          hour: 2
+          user: {{ admin_user }}
+          job: /home/{{ admin_user }}/ha-backup.sh
 
   - name: Install Home Assistant (on a virtualenv, on my user)
     block:
