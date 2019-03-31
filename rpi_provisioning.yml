@@ -8,15 +8,8 @@
 # opportunity to bump all packages to latest in distro, configure my chosen
 # hostname/timezone and give it a good reboot, so it's ready to rumble
 #
-# To (re)start:
-#   - Ensure your router is redirecting desired ports (80, 443) to
-#     this RPi's network adaptor, and that it has a fixed IP.
-#     (We'll also need 8123 for Home Assistant, but I'd only open that
-#      once a password is set, which will happen on first login)
-#   - Make your computer forget about old versions of that ip/hostname:
-#       ssh-keygen -R 1.2.3.4
-#       ssh-keygen -R hostname
-#   - Download Raspbian lite image and burn to SD with balenaEtecher (or dd)
+# To provision from zero:
+#   - Burn Raspbian (>= Stretch) Lite image to SD with balenaEtecher (or dd)
 #   - Before putting the SD card on RPi, mount it and:
 #     - Create empty SSH file (touch /Volumes/boot/SSH)
 #     - Create wpa_supplicant.conf
@@ -25,6 +18,22 @@
 #   - Wait a bit (it will cycle-boot at least once), then run the command
 #     below (password is raspberry):
 #        ansible-playbook rpi_provisioning.yml -i hosts -k
+#   - Supply the default "raspberry" password (for the last time in your life)
+#
+# Hints:
+#   - Ensure your router is redirecting ports 80, 443 and 8123 to
+#     this RPi's network adaptor, and that it has a fixed IP.
+#   - mDNS just works: once you reboot, you should be able to
+#     access your RPi with <host>.local (e.g.: tv-pi.local on mine)
+#     for ssh, etc.
+#   - Easy way to make your computer forget about old versions of
+#     that ip/hostname:
+#       ssh-keygen -R ip.of.your.pi
+#       ssh-keygen -R <host>.local
+#   - My network went bananas when I tried to access my dynamic DNS name,
+#     but adding an entry pointing it to the internal IP of the RPi
+#     to /etc/hosts (or better: your router's DNS, if it allwos that)
+#     fixes it.
 
 - hosts: raspberrypi
   remote_user: pi
