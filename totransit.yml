@@ -22,6 +22,7 @@
             location1: { name: '~ .*', proxy_pass: 'http://totransit_rails' }
     - role: chesterbr.ruby
       ruby_user: "{{ admin_user }}"
+      tags: update_app
 
   tasks:
     - name: Install prereq packages
@@ -57,13 +58,20 @@
     - name: Configure a keybase for cookie signing
       lineinfile: dest=~/.profile line="export SECRET_KEY_BASE={{ totransit_secret_key_base }}" regexp="^export SECRET_KEY_BASE"
 
+    # FIXME: This reports as changed, because rbenv behaviour changed
     - name: "Install ruby required by the code (e.g.: .ruby_version)"
-      shell: bash -lc "cd {{ totransit_app_dir }}; RUBY_CONFIGURE_OPTS=--disable-install-doc rbenv install"
+      shell: bash -lc "cd {{ totransit_app_dir }}; RUBY_CONFIGURE_OPTS=--disable-install-doc rbenv install --skip-existing"
       register: ruby_install_result
       failed_when: ruby_install_result.rc != 0 and not (ruby_install_result.stderr | search('^rbenv.*versions.*already exists$'))
       tags:
         - update_app
 
+    # Note to self: this doesn't work anymore on low-RAM VMsbecause we stopped
+    # vendorizing from development (which makes sense when we Dockerize it all).
+    # As a stepgap, I've manually applied
+    # https://www.digitalocean.com/community/tutorials/how-to-add-swap-on-ubuntu-14-04
+    # on the current droplet, but I should Ansible-ize that if I don't phase
+    # this file out.
     - name: Ensure we have all gem dependencies
       command: bash -lc "cd {{ totransit_app_dir }}; gem install bundler; bundle install --deployment"
       register: bundler
