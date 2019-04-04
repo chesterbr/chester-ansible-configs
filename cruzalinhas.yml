@@ -1,5 +1,5 @@
 ---
-- hosts: all
+- hosts: production
   remote_user: "{{ admin_user }}"
 
   handlers:

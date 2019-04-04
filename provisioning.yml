@@ -2,13 +2,13 @@
 # rest so we can run them as root/vagrant/whichver user is provided by the
 # hosting facility.
 ---
-- hosts: all
+- hosts: production
   gather_facts: no     # gathering facts won't work until Python is installed
   tasks:
     - name: Install Python 2.7 (Ubuntu 16.04 only comes with Python 3)
       raw: sudo apt-get update -qq && sudo apt-get install -qq python2.7
 
-- hosts: all
+- hosts: production
   roles:
     - role: chesterbr.user_setup
     - role: chesterbr.security
