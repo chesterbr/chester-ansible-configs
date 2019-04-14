@@ -1,15 +1,25 @@
 #!/bin/bash
+#
+# Usage:
+#   ha-backup [restore [optional_file_prefix]]
+#
+# Examples:
+#   ha-backup.sh                      # backs up latest config
+#   ha-backup.sh restore              # restores latest config
+#   ha-backup.sh restore 2019-04-01-  # restores config from April 1st, 2019
+#                                     # (the dash is important)
+#
 rm /tmp/ha-backup.tar.gz.gpg
 if [ "$1" == "restore" ]; then
   echo "Restoring..."
   smbclient '\\mynetwork\flash' -U guest% -c "
     cd ha-backups;
     lcd /tmp;
-    get ha-backup.tar.gz.gpg;
+    get $2ha-backup.tar.gz.gpg;
   "
   mkdir ~/.homeassistant
   cd ~/.homeassistant
-  cat /tmp/ha-backup.tar.gz.gpg |
+  cat /tmp/$2ha-backup.tar.gz.gpg |
     gpg -d --batch --passphrase-file /home/{{ admin_user }}/.backup-password -o - |
     tar -xz
 else
