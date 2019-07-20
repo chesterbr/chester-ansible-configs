@@ -200,23 +200,27 @@
 
   - name: Install and configure LIRC (infrared), using GPIO22 for output and GPIO23 for input
     block:
-      - apt: name=lirc state=present
+      # This is expected to fail, we'll redo in the end (see https://bit.ly/30MMTpR)
+      - command: bash -lc "DEBIAN_FRONTEND=noninteractive apt-get -yq install lirc"
+        failed_when: false
       - lineinfile:
-           dest: /boot/config.txt
-           regexp: "^#? ?dtoverlay="
-           line: "dtoverlay=lirc-rpi,gpio_in_pin=23,gpio_out_pin=22"
-           state: present
+          dest: /boot/config.txt
+          regexp: "^#? dtoverlay=gpio-ir,"
+          line: "dtoverlay=gpio-ir,gpio_pin=23"
+          state: present
         notify: reboot
-      - blockinfile:
-          dest: /etc/modules
-          block: |
-            lirc_dev
-            lirc_rpi gpio_in_pin=23 gpio_out_pin=22
+      - lineinfile:
+          dest: /boot/config.txt
+          regexp: "^#? dtoverlay=gpio-ir-tx,"
+          line: "dtoverlay=gpio-ir-tx,gpio_pin=22"
+          state: present
         notify: reboot
-      - template:
-          src: templates/lirc_hardware_conf.j2
-          dest: /etc/lirc/hardware.conf
+      - copy:
+          src: /etc/lirc/lircd.conf.dist
+          dest: /etc/lirc/lircd.conf
+          remote_src: yes
         notify: restart lirc
+        tags: lirc
       - template:
           src: templates/lirc_options.conf.j2
           dest: /etc/lirc/lirc_options.conf
@@ -230,6 +234,9 @@
           dest: /home/{{ admin_user }}/tv_source.lua
           mode: 0700
           owner: "{{ admin_user }}"
+      - apt:
+          name: lirc
+          state: present
 
   - name: Configure Home Assistant backups
     block:
