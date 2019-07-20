@@ -12,7 +12,7 @@
 #   - Burn Raspbian (>= Stretch) Lite image to SD with balenaEtecher (or dd)
 #   - Before putting the SD card on RPi, mount it and:
 #     - Create empty SSH file (touch /Volumes/boot/SSH)
-#     - Create wpa_supplicant.conf
+#     - Create wpa_supplicant.conf (vi /Volumes/boot/wpa_supplicant.conf)
 #       (model here: https://raspberrypi.stackexchange.com/a/82923/100572)
 #   - Unmount, put on RPi and boot it
 #   - Wait a bit (it will cycle-boot at least once), then run the command
