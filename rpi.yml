@@ -172,6 +172,13 @@
         - bluez-firmware
         - libbluetooth-dev
 
+  - name: Install Mosquitto (MQTT broker used by RF receiving) and clients
+    apt: name={{ packages }} state=present
+    vars:
+      packages:
+        - mosquitto
+        - mosquitto-clients
+
   - name: Check if we have already built 433Utils
     stat:
       path: /usr/bin/codesend
