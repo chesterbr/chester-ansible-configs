@@ -179,32 +179,6 @@
         - mosquitto
         - mosquitto-clients
 
-  - name: Check if we have already built 433Utils
-    stat:
-      path: /usr/bin/codesend
-    register: codesend
-
-  - name: Build and install RF (433Mhz) control software (433Utils), \
-          then enable my user to run it
-    when: codesend.stat.exists == false
-    block:
-      - apt: name=wiringpi state=present
-      - git:
-          repo: git://github.com/ninjablocks/433Utils.git
-          dest: /root/433Utils
-          recursive: yes
-      - command: make
-        args:
-          chdir: /root/433Utils/RPi_utils
-      - copy:
-          src: /root/433Utils/RPi_utils/{{ item }}
-          dest: /usr/bin/{{ item }}
-          mode: 0755
-          remote_src: yes
-        with_items:
-          - codesend
-          - RFSniffer
-
   - name: Install and configure LIRC (infrared), using GPIO22 for output and GPIO23 for input
     block:
       # This is expected to fail, we'll redo in the end (see https://bit.ly/30MMTpR)
