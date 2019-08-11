@@ -172,7 +172,7 @@
         - bluez-firmware
         - libbluetooth-dev
 
-  - name: Install Mosquitto (MQTT broker used by RF receiving) and clients
+  - name: Install Mosquitto (MQTT broker used by RF/IR) and its clients
     apt: name={{ packages }} state=present
     vars:
       packages:
