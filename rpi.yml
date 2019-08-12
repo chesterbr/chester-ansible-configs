@@ -55,13 +55,17 @@
 
   - name: Install general utilities
     apt: name={{ packages }} state=present
+    tags:
+      - apt
     vars:
       packages:
         - git                  # Required for Ansible git (and for life, IMHO).
         - python-setuptools    # Required for Ansible pip ¯\_(ツ)_/¯
+        - aptitude             # I don't use it, but Ansible seems to.
         - python3-gpiozero     # Provides pinout (and I ❤️ pinout).
         - libudev-dev          # Not 100% sure, but Home Assistant +
         - libopenzwave1.5-dev  #  ZWave seems to require these two.
+
   - name: Install fail2ban.
     block:
       - apt: name=fail2ban state=present
