@@ -37,9 +37,6 @@
   - name: restart unattended-upgrades
     service: name=unattended-upgrades state=restarted
 
-  - name: restart lirc
-    service: name=lircd state=restarted
-
   - name: reboot
     reboot:
 
