@@ -123,10 +123,12 @@
       - apt: name=ufw state=present
       - ufw: rule=allow port={{ item }}
         with_items:
-          - 22     # ssh
-          - 80     # http    (mostly to generate/renew certs)
-          - 443    # https   (mostly to generate/renew certs)
-          - 8123   # Home Assistant
+          - "22"     # ssh
+          - "80"     # http     (mostly to generate/renew certs)
+          - "443"    # https    (mostly to generate/renew certs)
+          - "1883"   # mqtt
+          - "8883"   # mqtt ssl (not sure whether mqtt is using ssl, let's open both)
+          - "8123"   # Home Assistant
       - ufw: state=enabled policy=reject direction=incoming
 
   - name: Install certbot (so we can have letsencrypt ssl certificates)
