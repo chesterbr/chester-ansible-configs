@@ -34,6 +34,9 @@
   - name: restart ssh
     service: name=ssh state=restarted
 
+  - name: restart dns
+    service: name=dnsmasq state=restarted
+
   - name: restart unattended-upgrades
     service: name=unattended-upgrades state=restarted
 
@@ -93,6 +96,21 @@
         - apt-listchanges
         - bsd-mailx
 
+  - name: Configure dnsmasq with a custom entry (so my phone can find the dynamic hostname)
+    tags:
+      - dns
+    block:
+      - apt: name={{ packages }} state=present
+        vars:
+          packages:
+            - dnsmasq
+            - dnsutils
+      - lineinfile:
+          dest: "/etc/dnsmasq.conf"
+          line: "address=/{{ external_hostname }}/{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
+          state: present
+        notify: restart dns
+
   - name: Updated unattended-upgrades config to reboot if needed,
           auto-fix, reboot time, email, etc
     lineinfile:
@@ -125,6 +143,7 @@
       - ufw: rule=allow port={{ item }}
         with_items:
           - "22"     # ssh
+          - "53"     # dns      (dnsmasq, see below)
           - "80"     # http     (mostly to generate/renew certs)
           - "443"    # https    (mostly to generate/renew certs)
           - "1883"   # mqtt
