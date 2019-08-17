@@ -3,3 +3,4 @@
 *.retry
 backups_old_pi
 Untitled.code-workspace
+.vscode
