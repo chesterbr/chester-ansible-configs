@@ -55,8 +55,7 @@
 
   - name: Install general utilities
     apt: name={{ packages }} state=present
-    tags:
-      - apt
+    tags: apt
     vars:
       packages:
         - git                  # Required for Ansible git (and for life, IMHO).
@@ -97,8 +96,7 @@
         - bsd-mailx
 
   - name: Configure dnsmasq with a custom entry (so my phone can find the dynamic hostname)
-    tags:
-      - dns
+    tags: dns
     block:
       - apt: name={{ packages }} state=present
         vars:
@@ -136,8 +134,7 @@
     notify: restart unattended-upgrades
 
   - name: (Re)configure firewall (ufw)
-    tags:
-      - firewall
+    tags: firewall
     block:
       - apt: name=ufw state=present
       - ufw: rule=allow port={{ item }}
