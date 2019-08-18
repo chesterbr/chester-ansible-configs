@@ -226,6 +226,20 @@
           user: "{{ admin_user }}"
           job: /home/{{ admin_user }}/ha-backup.sh
 
+  - name: Configure the Raspberry Pi camera
+    tags: camera
+    block:
+      # yes, 0=enabled for all things here ¯\_(ツ)_/¯
+      # see: https://github.com/BretStateham/headlesspi#enable-ssh--vnc
+      - command: bash -lc "raspi-config nonint do_camera 0"
+        notify: reboot
+      # This doesn't seem to work anymore. I'll let it here as
+      # a placeholder, in case I ever find a solution
+      # - lineinfile:
+      #     dest: "/boot/config.txt"
+      #     regexp: "^disable_camera_led="
+      #     line: "disable_camera_led=0"
+
   - name: Check if Home Assistant (config) is present...
     stat:
       path: /home/{{ admin_user }}/.homeassistant
