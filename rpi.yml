@@ -66,8 +66,15 @@
         - libopenzwave1.5-dev  #  ZWave seems to require these two.
 
   - name: Install fail2ban.
+    tags: fail2ban
     block:
-      - apt: name=fail2ban state=present
+      - apt: name=fail2ban,sendmail state=present
+      - copy:
+          src: templates/jail.local.j2
+          dest: /etc/fail2ban/jail.local
+          owner: root
+          group: root
+          mode: 0644
       - service: name=fail2ban state=started enabled=yes
 
   - name: Update SSH configuration to be more secure (no password/root logins).
@@ -178,8 +185,8 @@
           (and copy/fix perms so HomeAssistant can use them)
     cron:
       name: Update ssl certificates
-      minute: 0
-      hour: 4
+      minute: "0"
+      hour: "4"
       job: /root/update_and_copy_certificates.sh
 
   - name: Install packages required for Bluetooth
@@ -218,8 +225,8 @@
         become: no
       - cron:
           name: Backup homeassistant configs
-          minute: 0
-          hour: 3
+          minute: "0"
+          hour: "3"
           user: "{{ admin_user }}"
           job: /home/{{ admin_user }}/ha-backup.sh
 
