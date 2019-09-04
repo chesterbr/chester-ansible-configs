@@ -91,22 +91,10 @@
     - name: Ensure temp directory exists (needed for first-time data load)
       file: path={{ cruzalinhas_checkout_dir }}/tmp/cache state=directory
 
-    - name: Install Selenium bindings for Python and headless display utility
-      pip: name={{ item }}
-      become: yes
-      with_items:
-        - selenium
-        - pyvirtualdisplay
-
-    - name: Install the binary W3C WebDriver for Firefox (so Selenium can plug into it)
-      command: bash -lc "cd /usr/local/bin; curl -L {{ cruzalinhas_geckodriver_url }} | tar -xvz"
-      become: yes
-
-    - name: Install sptrans data download script
-      template: src=templates/download_sptrans_gtfs.py.j2 dest={{ cruzalinhas_download_sptrans_script }} owner={{ admin_user }}
-
-    - name: Download latest sptrans data
-      command: bash -lc "python {{ cruzalinhas_download_sptrans_script }}"
+    - name: Download latest sptrans data from OpenMobilityData
+      get_url:
+        url: https://openmobilitydata.org/p/sptrans/1049/latest/download
+        dest: "{{ sptrans_gtfs_filename }}"
       tags:
         - update_sptrans_data
 

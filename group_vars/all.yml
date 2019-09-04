@@ -22,10 +22,6 @@ blog_public_dir: /home/chester/chester.me/www
 
 # Cruzalinhas options
 cruzalinhas_checkout_dir: /home/chester/cruzalinhas/source
-cruzalinhas_download_sptrans_script: /home/chester/cruzalinhas/download_sptrans_gtfs.py
-cruzalinhas_selenium_jar: /home/chester/cruzalinhas/selenium.jar
-cruzalinhas_geckodriver_url: https://github.com/mozilla/geckodriver/releases/download/v0.11.1/geckodriver-v0.11.1-linux64.tar.gz
-sptrans_download_dir: '/tmp/sptrans'
 sptrans_gtfs_filename: '/home/chester/cruzalinhas/source/public/gtfs-sptrans.zip'
 
 # Toronto Transit for Pebble options
