@@ -92,7 +92,7 @@
 
   # Uncomment if you don't want the local pi user
   # - name: Drop the pi user (we don't need it and can't even use it remotely at this point)
-  #   user: name={{ admin_user }} state=absent remove=yes
+  #   user: name=pi state=absent remove=yes
 
   - name: Install unattended upgrades package and dependencies.
     apt: name={{ packages }} state=present
