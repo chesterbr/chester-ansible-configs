@@ -4,5 +4,8 @@ cruzalinhas.com
 [production]
 cruzalinhas.com
 
+[raspberrypi-unprovisioned]
+raspberrypi.local
+
 [raspberrypi]
-192.168.2.110
+tv-pi.local

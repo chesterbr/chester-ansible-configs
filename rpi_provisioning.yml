@@ -6,7 +6,7 @@
 #
 # Given it will likely be ran when an image was freshly baked, we also use the
 # opportunity to bump all packages to latest in distro, configure my chosen
-# hostname/timezone and give it a good reboot, so it's ready to rumble
+# hostname/timezone/static IP and give it a good reboot, so it's ready to rumble
 #
 # To provision from zero:
 #   - Burn Raspbian (>= Stretch) Lite image to SD with balenaEtecher (or dd)
@@ -15,14 +15,15 @@
 #     - Create wpa_supplicant.conf (vi /Volumes/boot/wpa_supplicant.conf)
 #       (model here: https://raspberrypi.stackexchange.com/a/82923/100572)
 #   - Unmount, put on RPi and boot it
-#   - Wait a bit (it will cycle-boot at least once), then run the command
+#   - Wait a bit (it will cycle-boot at least once), figure out the IP it got
+#     from the router (either look at screen or router setup), then run:
 #     below (password is raspberry):
-#        ansible-playbook rpi_provisioning.yml -i hosts -k
+#        ansible-playbook rpi_provisioning.yml -k
 #   - Supply the default "raspberry" password (for the last time in your life)
 #
 # Hints:
 #   - Ensure your router is redirecting ports 80, 443 and 8123 to
-#     this RPi's network adaptor, and that it has a fixed IP.
+#     this RPi's network adaptor (also 22 once it's fully locked down)
 #   - mDNS just works: once you reboot, you should be able to
 #     access your RPi with <host>.local (e.g.: tv-pi.local on mine)
 #     for ssh, etc.
@@ -35,7 +36,7 @@
 #     to /etc/hosts (or better: your router's DNS, if it allwos that)
 #     fixes it.
 
-- hosts: raspberrypi
+- hosts: raspberrypi-unprovisioned
   remote_user: pi
   become: yes
   become_method: sudo
@@ -43,6 +44,10 @@
     admin_user: chesterbr
     admin_user_key: https://github.com/chesterbr.keys
     host: tv-pi
+    interface: wlan0
+    ipaddress: 10.88.111.201
+    routers: 10.88.111.254
+    dns_servers: 10.88.111.1
 
   roles:
   - chesterbr.user_setup
@@ -65,6 +70,18 @@
   - name: Configure timezone
     timezone:
       name: America/Toronto
+
+  - name: Configure static IP
+    lineinfile:
+      dest:  /etc/dhcpcd.conf
+      regexp: "{{ item.regexp }}"
+      line: "{{ item.line }}"
+      state: present
+    with_items:
+      - { regexp: "^interface eth[0-9]$", line: "interface {{ interface }}" }
+      - { regexp: "^static ip_address", line: "static ip_address={{ ipaddress }}" }
+      - { regexp: "^static routers", line: "static routers={{ routers }}" }
+      - { regexp: "^static domain_name_servers", line: "static domain_name_servers={{ dns_servers }}" }
 
   - name: Reboot
     reboot:
