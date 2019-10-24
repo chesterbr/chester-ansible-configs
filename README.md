@@ -4,7 +4,7 @@ This project contains the configuration for my personal projects (which I automa
 
 - Ansible exemples may be useful to someone else (despite being very specific to my stuff);
 - It keeps me honest (makes me write scripts that don't suck much, forces me not to have plaintext secrets, exposes security flaws, etc.);
-- Public github is free! ;-)
+- ~Public github is free~ [Not really a reason anymore](https://github.blog/2019-01-07-new-year-new-github/) 🎉
 
 Feel free to use it (I'm licensing as MIT to ensure that) and to open issues or [contact me][6] if you find something awry.
 
