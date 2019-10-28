@@ -83,5 +83,13 @@
       - { regexp: "^static routers", line: "static routers={{ routers }}" }
       - { regexp: "^static domain_name_servers", line: "static domain_name_servers={{ dns_servers }}" }
 
+  - name: Configure the pen drive for backups
+    mount:
+      path: /media/usb_backup
+      src: /dev/sda1
+      fstype: vfat
+      opts: uid=1001,gid=1001,
+      state: mounted
+
   - name: Reboot
     reboot:
