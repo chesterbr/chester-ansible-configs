@@ -207,13 +207,6 @@
 
   - name: Configure Home Assistant backups
     block:
-      - apt: name={{ packages }} state=present
-        vars:
-          packages:
-            - samba-common
-            - smbclient
-            - samba-common-bin
-            - cifs-utils
       - copy:
           content: "{{ backup_password }}"
           dest: /home/{{ admin_user }}/.backup-password
