@@ -58,11 +58,12 @@
     - name: Configure a keybase for cookie signing
       lineinfile: dest=~/.profile line="export SECRET_KEY_BASE={{ totransit_secret_key_base }}" regexp="^export SECRET_KEY_BASE"
 
-    # FIXME: This reports as changed, because rbenv behaviour changed
     - name: "Install ruby required by the code (e.g.: .ruby_version)"
-      shell: bash -lc "cd {{ totransit_app_dir }}; RUBY_CONFIGURE_OPTS=--disable-install-doc rbenv install --skip-existing"
+      shell: bash -lc "cd {{ totransit_app_dir }}; CONFIGURE_OPTS=\"--disable-install-rdoc\" yes \\n | rbenv install"
       register: ruby_install_result
-      failed_when: ruby_install_result.rc != 0 and not (ruby_install_result.stderr | search('^rbenv.*versions.*already exists$'))
+      changed_when: "'Installed' in ruby_install_result.stderr"
+      failed_when: ruby_install_result.rc != 0 and not (ruby_install_result.stderr is search('^rbenv.*versions.*already exists$'))
+      notify: restart app
       tags:
         - update_app
 
