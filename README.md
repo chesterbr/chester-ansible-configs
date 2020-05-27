@@ -14,13 +14,9 @@ If you want to learn Ansible, I strongly recommend [Jeff Geerling][11]'s [Ansibl
 
 ## What does it configure?
 
-### chester.me (blog)
-
-My [personal blog][4], currently based on a [forked Octopress 2.x][5].
-
 ### cruzalinhas.com
 
-An app that allows quickly finding public transportation routes in São Paulo. See [source code][1] or [website][3] for details. It shares she same nginx with the blog above.
+An app that allows quickly finding public transportation routes in São Paulo. See [source code][1] or [website][3] for details. It shares she same nginx with the Toronto Transit (below).
 
 ### Home automation Raspberry Pi
 
@@ -48,7 +44,7 @@ vagrant up
 To install one (or more) of the services on the virtual machine, run its playbook:
 
 ```
-ansible-playbook blog.yml -i vagrant_hosts,
+ansible-playbook <playbook name>.yml -i hosts,
 ```
 
 (alternatively you can use `-i .vagrant/provisioners/ansible/inventory/vagrant_ansible_inventory`, but it will log in with the default user for Ubuntu provisioning, not the `{{ admin_user }}` defined on the global vars)
@@ -75,7 +71,6 @@ Once that is done, playbooks may be ran on the proper hosts. Currently I ran all
 Those are tagged on the playbooks, please check them for such tags and add to `ansible-playbook`. Examples:
 
 - To download new data from sptrans: `--tags update_sptrans_data`;
-- To publish the blog from its repository: `--tags publish_blog`;
 - To deploy the latest master of cruzalinhas or toronto-transit-time: `--tags update_app`.
 
 

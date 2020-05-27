@@ -16,10 +16,6 @@ nginx_sites:
       server_name: _
       return: 444
 
-# Blog options
-blog_checkout_dir: /home/chester/chester.me/source
-blog_public_dir: /home/chester/chester.me/www
-
 # Cruzalinhas options
 cruzalinhas_checkout_dir: /home/chester/cruzalinhas/source
 sptrans_gtfs_filename: '/home/chester/cruzalinhas/source/public/gtfs-sptrans.zip'
