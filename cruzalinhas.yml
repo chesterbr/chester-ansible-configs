@@ -71,7 +71,7 @@
     - name: "Install ruby required by the code (e.g.: .ruby_version)"
       shell: bash -lc "cd {{ cruzalinhas_checkout_dir }}; CONFIGURE_OPTS=\"--disable-install-rdoc\" yes \\n | rbenv install"
       register: ruby_install_result
-      failed_when: ruby_install_result.rc != 0 and not (ruby_install_result.stderr | search('^rbenv.*versions.*already exists$'))
+      failed_when: ruby_install_result.rc != 0 and not (ruby_install_result.stderr is search('^rbenv.*versions.*already exists$'))
       notify: restart app
       tags:
         - update_app
