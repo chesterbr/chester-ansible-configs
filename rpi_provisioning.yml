@@ -36,7 +36,7 @@
 #     to /etc/hosts (or better: your router's DNS, if it allwos that)
 #     fixes it.
 
-- hosts: raspberrypi-unprovisioned
+- hosts: raspberrypi_unprovisioned
   remote_user: pi
   become: yes
   become_method: sudo
