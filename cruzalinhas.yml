@@ -89,18 +89,8 @@
       become: yes
       notify: reload supervisor
 
-    - name: Ensure temp directory exists (needed for first-time data load)
-      file: path={{ cruzalinhas_checkout_dir }}/tmp/cache state=directory
-
-    - name: Download latest sptrans data from OpenMobilityData
-      get_url:
-        url: https://openmobilitydata.org/p/sptrans/1049/latest/download
-        dest: "{{ sptrans_gtfs_filename }}"
-      tags:
-        - update_sptrans_data
-
-    - name: Update SPTrans data
-      command: bash -lc "cd {{ cruzalinhas_checkout_dir }}; bundle exec rake sptrans:import"
+    - name: Download and update SPTrans data
+      command: bash -lc "cd {{ cruzalinhas_checkout_dir }}; DISABLE_DATABASE_ENVIRONMENT_CHECK=1 bundle exec rake sptrans:import"
       notify: restart app
       tags:
         - update_sptrans_data
