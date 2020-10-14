@@ -19,11 +19,12 @@
   notify: restart ssh
 
 - name: Install unattended upgrades package and dependencies.
-  apt: pkg={{ item }} state=present
-  with_items:
-    - unattended-upgrades
-    - update-notifier-common
-    - mailutils
+  apt: pkg={{ packages }} state=present
+  vars:
+    packages:
+      - unattended-upgrades
+      - update-notifier-common
+      - mailutils
 
 - name: Copy unattended-upgrades configuration files in place.
   template:

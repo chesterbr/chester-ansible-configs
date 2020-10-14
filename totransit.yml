@@ -26,12 +26,13 @@
 
   tasks:
     - name: Install prereq packages
-      apt: name={{ item }} state=installed
+      apt: name={{ packages }} state=present
       become: yes
-      with_items:
-        - git
-        - libsqlite3-dev
-        - supervisor
+      vars:
+        packages:
+          - git
+          - libsqlite3-dev
+          - supervisor
 
     - name: "Auto-start supervisord on boot (temp fix for Ubuntu 16.04 bug: https://bugs.launchpad.net/ubuntu/+source/supervisor/+bug/1594740)"
       shell: "systemctl enable supervisor; systemctl start supervisor"
@@ -102,3 +103,5 @@
     - name: Do a first load of the ttc data
       command: bash -lc "cd {{ totransit_app_dir }}; DISABLE_DATABASE_ENVIRONMENT_CHECK=1 bundle exec rake db:reset ttc:crawl"
       notify: restart app
+      tags:
+        - load_ttc_data

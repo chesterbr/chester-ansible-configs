@@ -1,13 +1,14 @@
 ---
 - name: Install ruby management dependencies
   become: yes
-  apt: name={{ item }} state=installed
-  with_items:
-    - build-essential
-    - libssl-dev
-    - libreadline-dev
-    - zlib1g-dev
-    - git
+  apt: name={{ packages }} state=present
+  vars:
+    packages:
+      - build-essential
+      - libssl-dev
+      - libreadline-dev
+      - zlib1g-dev
+      - git
 
 - name: Avoid documentation and other slow stuff on gem (bundle) install
   template: src=.gemrc.j2 dest=~{{ ruby_user }}/.gemrc mode=700 owner={{ ruby_user }}

@@ -30,18 +30,19 @@
 
   tasks:
     - name: Install prereq packages
-      apt: name={{ item }} state=installed
+      apt: name={{ packages }} state=present
       become: yes
-      with_items:
-        - git
-        - libsqlite3-dev
-        - xvfb
-        - firefox
-        - python-pip
-        - default-jdk
-        - nodejs
-        - makepasswd
-        - supervisor
+      vars:
+        packages:
+          - git
+          - libsqlite3-dev
+          - xvfb
+          - firefox
+          - python-pip
+          - default-jdk
+          - nodejs
+          - makepasswd
+          - supervisor
 
     - name: "Auto-start supervisord on boot (temp fix for Ubuntu 16.04 bug: https://bugs.launchpad.net/ubuntu/+source/supervisor/+bug/1594740)"
       shell: "systemctl enable supervisor; systemctl start supervisor"
