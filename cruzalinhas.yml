@@ -58,7 +58,7 @@
       git: repo=git://github.com/chesterbr/cruzalinhas.git
            accept_hostkey=true
            dest={{ cruzalinhas_checkout_dir }}
-           version=master
+           version=main
       notify: restart app
       tags:
         - update_app

@@ -71,7 +71,7 @@ Once that is done, playbooks may be ran on the proper hosts. Currently I ran all
 Those are tagged on the playbooks, please check them for such tags and add to `ansible-playbook`. Examples:
 
 - To download new data from sptrans: `--tags update_sptrans_data`;
-- To deploy the latest master of cruzalinhas or toronto-transit-time: `--tags update_app`.
+- To deploy the latest version of cruzalinhas or toronto-transit-time: `--tags update_app`.
 
 
 [1]: https://github.com/chesterbr/cruzalinhas
@@ -87,5 +87,5 @@ Those are tagged on the playbooks, please check them for such tags and add to `a
 [11]: https://github.com/geerlingguy
 [12]: https://www.vagrantup.com/
 [13]: http://docs.ansible.com/ansible/playbooks_vault.html
-[14]: https://github.com/chesterbr/chester-ansible-configs/blob/master/roles/chesterbr.vault/vars/vault.yml.SAMPLE
+[14]: https://github.com/chesterbr/chester-ansible-configs/blob/main/roles/chesterbr.vault/vars/vault.yml.SAMPLE
 [15]: https://galaxy.ansible.com/geerlingguy/
