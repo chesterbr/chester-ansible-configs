@@ -47,7 +47,7 @@
       git: repo=git://github.com/chesterbr/toronto-transit-for-pebble.git
            accept_hostkey=true
            dest={{ totransit_checkout_dir }}
-           version=master
+           version=main
       notify: restart app
       tags:
         - update_app
