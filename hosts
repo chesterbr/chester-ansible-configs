@@ -4,6 +4,9 @@ cruzalinhas.com
 [production]
 cruzalinhas.com
 
+[production-totransit]
+totransit.chester.me
+
 [raspberrypi_unprovisioned]
 raspberrypi.local
 

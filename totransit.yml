@@ -1,5 +1,5 @@
 ---
-- hosts: production
+- hosts: production-totransit
   remote_user: "{{ admin_user }}"
 
   handlers:
