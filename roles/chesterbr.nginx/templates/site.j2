@@ -3,15 +3,15 @@ server {
 	access_log /var/log/nginx/{{ item.server.file_name }}-access.log;
 	error_log /var/log/nginx/{{ item.server.file_name }}-error.log;
 
-{% for k,v in item.server.iteritems() %}
+{% for k,v in item.server.items() %}
 {% if k.find('location') == -1 and k != 'file_name' and k != 'https_server_name' %}
 {{ k }} {{ v }};
 {% endif %}
 {% endfor %}
 
-{% for k,v in item.server.iteritems() if k.find('location') != -1 %}
+{% for k,v in item.server.items() if k.find('location') != -1 %}
   location {{ v.name }} {
-{% for x,y in v.iteritems() if x != 'name' %}
+{% for x,y in v.items() if x != 'name' %}
       {{ x }} {{ y }};
 {% endfor %}
   }
