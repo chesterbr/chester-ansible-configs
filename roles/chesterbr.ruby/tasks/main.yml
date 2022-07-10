@@ -26,7 +26,7 @@
   file: path=~{{ ruby_user }}/.rbenv/plugins/ owner={{ ruby_user }} group={{ ruby_user }} mode=0755 state=directory
 
 - name: Install ruby-build
-  git: repo=git://github.com/sstephenson/ruby-build.git dest=~{{ ruby_user }}/.rbenv/plugins/ruby-build accept_hostkey=true
+  git: repo=git@github.com:rbenv/ruby-build.git dest=~{{ ruby_user }}/.rbenv/plugins/ruby-build accept_hostkey=true
 
 - name: Check if required ruby is already installed
   command: bash -lc "rbenv versions | grep -q {{ ruby_version }}"
