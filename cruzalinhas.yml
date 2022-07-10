@@ -55,7 +55,7 @@
        - reload nginx
 
     - name: Ensure code repository is at latest version
-      git: repo=git://github.com/chesterbr/cruzalinhas.git
+      git: repo=git@github.com:chesterbr/cruzalinhas.git
            accept_hostkey=true
            dest={{ cruzalinhas_checkout_dir }}
            version=main
