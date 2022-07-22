@@ -1,11 +1,16 @@
-- name: Run Ansible playbook
-  uses: dawidd6/action-ansible-playbook@v2.5.0
-  with:
-    playbook: cruzalinhas.yml
-    key: ${{secrets.SSH_PRIVATE_KEY}}
-    # Optional, encrypted vault password
-    vault_password: ${{secrets.VAULT_PASSWORD}}
-    options: |
-      --tags update_at
-      --inventory hosts
-      --verbose
+name: learn-github-actions
+on: [push]
+jobs:
+  deploy-cruzalinhas:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Deploy using Ansible playbook
+      uses: dawidd6/action-ansible-playbook@v2.5.0
+      with:
+        playbook: cruzalinhas.yml
+        key: ${{secrets.SSH_PRIVATE_KEY}}
+        vault_password: ${{secrets.VAULT_PASSWORD}}
+        options: |
+          --tags update_at
+          --inventory hosts
+          --verbose
