@@ -1,9 +1,11 @@
 name: learn-github-actions
-on: []
+on: [push]
 jobs:
   deploy-cruzalinhas:
     runs-on: ubuntu-latest
     steps:
+    - name: show current directory
+      run: "cd"
     - name: Deploy using Ansible playbook
       uses: dawidd6/action-ansible-playbook@v2.5.0
       with:
