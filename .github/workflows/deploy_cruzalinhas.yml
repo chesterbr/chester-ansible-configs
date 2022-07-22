@@ -1,5 +1,5 @@
 name: learn-github-actions
-on: [push]
+on: []
 jobs:
   deploy-cruzalinhas:
     runs-on: ubuntu-latest
