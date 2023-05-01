@@ -26,7 +26,7 @@ I used my RPi to add voice control to my [lights](https://chester.me/archives/20
 
 Back-end for a Pebble app that finds the nearest bus/streetcar stops and shows how long it will take for the next vehicles to arrive.
 
-### miniTruco server [TODO]
+### miniTruco server
 
 This is a simple Java app that listens on the 6912 port, handling communication between [miniTruco][2] clients and spawning bot players to fill incomplete tables (a miniTruco table requires 4 players).
 
@@ -75,7 +75,7 @@ Those are tagged on the playbooks, please check them for such tags and add to `a
 
 
 [1]: https://github.com/chesterbr/cruzalinhas
-[2]: https://github.com/chesterbr/minitruco-j2me
+[2]: https://github.com/chesterbr/minitruco-android
 [3]: http://cruzalinhas.com
 [4]: http://chester.me
 [5]: https://github.com/chesterbr/octopress

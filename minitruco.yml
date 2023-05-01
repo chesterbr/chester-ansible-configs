@@ -1,0 +1,43 @@
+---
+- hosts: production
+  remote_user: "{{ admin_user }}"
+
+  handlers:
+    - name: reload supervisor
+      shell: "service supervisor restart; supervisorctl reload"
+      become: yes
+
+    - name: restart app
+      shell: "supervisorctl restart minitruco"
+      become: yes
+
+  roles:
+    - role: chesterbr.vault
+  tasks:
+    - name: Install prereq packages
+      apt: name={{ packages }} state=present
+      become: yes
+      vars:
+        packages:
+          - git
+          - default-jdk
+          - supervisor
+
+    # Think we don't need this, will leave around just in case
+    # - name: "Auto-start supervisord on boot (temp fix for Ubuntu 16.04 bug: https://bugs.launchpad.net/ubuntu/+source/supervisor/+bug/1594740)"
+    #   shell: "systemctl enable supervisor; systemctl start supervisor"
+    #   become: yes
+
+    - name: Ensure code repository is at latest version
+      git: repo=https://github.com/chesterbr/minitruco-android.git
+           accept_hostkey=true
+           dest={{ minitruco_checkout_dir }}
+           version=main
+      notify: restart app
+      tags:
+        - update_app
+
+    - name: Configures app to run under supervisor (from source dir)
+      template: src=templates/minitruco.conf.supervisor.j2 dest=/etc/supervisor/conf.d/minitruco.conf
+      become: yes
+      notify: reload supervisor

@@ -26,3 +26,7 @@ sptrans_gtfs_filename: '/home/chester/cruzalinhas/source/public/gtfs-sptrans.zip
 # Toronto Transit for Pebble options
 totransit_checkout_dir: /home/chester/totransit/source
 totransit_app_dir: /home/chester/totransit/source/server
+
+# Minitruco (server)
+minitruco_checkout_dir: /home/chester/minitruco/source
+minitruco_app_dir: /home/chester/minitruco/source/server/deploy
