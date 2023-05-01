@@ -45,7 +45,7 @@
         - reload nginx
 
     - name: Ensure code repository is at latest version
-      git: repo=git@github.com:chesterbr/toronto-transit-time.git
+      git: repo=https://github.com/chesterbr/toronto-transit-time.git
            accept_hostkey=true
            dest={{ totransit_checkout_dir }}
            version=main
