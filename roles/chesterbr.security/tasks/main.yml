@@ -1,22 +1,4 @@
 ---
-- name: Install fail2ban.
-  apt: name=fail2ban state=present
-
-- name: Ensure fail2ban is running and enabled on boot.
-  service: name=fail2ban state=started enabled=yes
-
-- name: Update SSH configuration to be more secure.
-  lineinfile:
-    dest: "/etc/ssh/sshd_config"
-    regexp: "{{ item.regexp }}"
-    line: "{{ item.line }}"
-    state: present
-  with_items:
-    - regexp: "^PasswordAuthentication"
-      line: "PasswordAuthentication no"
-    - regexp: "^PermitRootLogin"
-      line: "PermitRootLogin no"
-  notify: restart ssh
 
 - name: Install unattended upgrades package and dependencies.
   apt: pkg={{ packages }} state=present
@@ -53,3 +35,28 @@
   ufw: state=enabled policy=reject
   tags:
     - firewall
+
+- name: Update SSH configuration to be more secure
+  lineinfile:
+    dest: "/etc/ssh/sshd_config"
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    state: present
+  with_items:
+    - regexp: "^PasswordAuthentication"
+      line: "PasswordAuthentication no"
+    - regexp: "^PermitRootLogin"
+      line: "PermitRootLogin no"
+
+- name: Install fail2ban.
+  apt: name=fail2ban state=present
+
+- name: Ensure fail2ban is running and enabled on boot.
+  service: name=fail2ban state=started enabled=yes
+
+# This is the last thing we should do - after that, ssh as root
+# won't be accepted. It must use raw because otherwise Ansible
+# does one last ssh, fails and fail2ban locks us out.
+- name: restart sshd to make new configuration effective
+  raw: "systemctl restart sshd"
+

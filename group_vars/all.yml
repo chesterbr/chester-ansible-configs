@@ -1,11 +1,11 @@
 ---
 # This user will run administrative tasks (and also host
 # support files if we deem so)
-admin_user: chester
+admin_user: chesterbr
 admin_user_key: https://github.com/chesterbr.keys
 admin_email: cd@pobox.com
 
-# User that server apps will run on (non-sudoer, can't log in, has no home dir)
+# User that will host and execute the server apps  (non-sudoer, can't log in)
 server_user: server
 
 # Ansible needs to use Python 2.7
@@ -20,12 +20,12 @@ nginx_sites:
       return: 444
 
 # Cruzalinhas options
-cruzalinhas_checkout_dir: /home/chester/cruzalinhas/source
-sptrans_gtfs_filename: '/home/chester/cruzalinhas/source/public/gtfs-sptrans.zip'
+cruzalinhas_checkout_dir: /home/chesterbr/cruzalinhas/source
+sptrans_gtfs_filename: '/home/chesterbr/cruzalinhas/source/public/gtfs-sptrans.zip'
 
 # Toronto Transit for Pebble options
-totransit_checkout_dir: /home/chester/totransit/source
-totransit_app_dir: /home/chester/totransit/source/server
+totransit_checkout_dir: /home/chesterbr/totransit/source
+totransit_app_dir: /home/chesterbr/totransit/source/server
 
 # Minitruco (server)
 minitruco_checkout_dir: /home/chester/minitruco/source

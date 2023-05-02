@@ -17,4 +17,4 @@
     validate: 'visudo -cf %s'
 
 - name: Create server user
-  user: name={{ server_user }} system=true create_home=false
+  user: name={{ server_user }} system=true create_home=true

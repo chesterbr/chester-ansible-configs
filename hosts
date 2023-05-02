@@ -1,14 +1,5 @@
-[all]
-cruzalinhas.com
+# No idea why, but ansible_python_inventory only works if per-host or on CLI -e
+# so I gave up on split/named hosts now to avoid repeating that ad nauseam
 
 [production]
-cruzalinhas.com
-
-[production-totransit]
-totransit.chester.me
-
-[raspberrypi_unprovisioned]
-raspberrypi.local
-
-[raspberrypi]
-tv-pi.local
+165.227.44.123 ansible_python_interpreter=/usr/bin/python3
