@@ -1,2 +1,3 @@
 [program:minitruco]
-command=su {{ server_user }} -lc "cd {{ minitruco_app_dir }}; java -jar server.jar"
+user={{ server_user }}
+command=java -jar {{ minitruco_app_dir }}/server.jar

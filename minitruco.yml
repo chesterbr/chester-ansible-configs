@@ -4,7 +4,7 @@
 
   handlers:
     - name: reload supervisor
-      shell: "service supervisor restart; supervisorctl reload"
+      shell: "supervisorctl reload"
       become: yes
 
     - name: restart app
@@ -23,11 +23,6 @@
           - default-jdk
           - supervisor
 
-    # Think we don't need this, will leave around just in case
-    # - name: "Auto-start supervisord on boot (temp fix for Ubuntu 16.04 bug: https://bugs.launchpad.net/ubuntu/+source/supervisor/+bug/1594740)"
-    #   shell: "systemctl enable supervisor; systemctl start supervisor"
-    #   become: yes
-
     - name: Ensure code repository is at latest version
       git: repo=https://github.com/chesterbr/minitruco-android.git
            accept_hostkey=true
@@ -37,7 +32,27 @@
       tags:
         - update_app
 
-    - name: Configures app to run under supervisor (from source dir)
+    - name: Ensures application directory exists
+      file:
+        path: "{{ minitruco_app_dir }}"
+        state: directory
+        owner: "{{ server_user }}"
+        group: "{{ server_user }}"
+      become: yes
+
+    - name: Copy the server JAR with proper permissions
+      copy:
+        remote_src: yes
+        src: "{{ minitruco_checkout_dir }}/server/deploy/server.jar"
+        dest: "{{ minitruco_app_dir }}/server.jar"
+        owner: "{{ server_user }}"
+        group: "{{ server_user }}"
+      become: yes
+      notify: restart app
+      tags:
+        - update_app
+
+    - name: Configure app to run under supervisor (from source dir)
       template: src=templates/minitruco.conf.supervisor.j2 dest=/etc/supervisor/conf.d/minitruco.conf
       become: yes
       notify: reload supervisor
