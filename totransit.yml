@@ -1,10 +1,10 @@
 ---
-- hosts: production-totransit
+- hosts: production
   remote_user: "{{ admin_user }}"
 
   handlers:
-    - name: reload supervisor
-      shell: "service supervisor restart; supervisorctl reload"
+    - name: reload supervisor # without restarting other supervised apps
+      shell: "supervisorctl update; supervisorctl reread"
       become: yes
 
     - name: restart app
@@ -12,7 +12,6 @@
       become: yes
 
   roles:
-    - role: chesterbr.vault
     - role: chesterbr.nginx
       nginx_sites:
         - server:
@@ -21,7 +20,7 @@
             server_name: totransit.chester.me
             location1: { name: '~ .*', proxy_pass: 'http://totransit_rails' }
     - role: chesterbr.ruby
-      ruby_user: "{{ admin_user }}"
+      ruby_user: "{{ server_user }}"
       tags: update_app
 
   tasks:
@@ -33,10 +32,6 @@
           - git
           - libsqlite3-dev
           - supervisor
-
-    - name: "Auto-start supervisord on boot (temp fix for Ubuntu 16.04 bug: https://bugs.launchpad.net/ubuntu/+source/supervisor/+bug/1594740)"
-      shell: "systemctl enable supervisor; systemctl start supervisor"
-      become: yes
 
     - name: Add totransit upstream to server config
       become: yes
@@ -50,14 +45,15 @@
            dest={{ totransit_checkout_dir }}
            version=main
       notify: restart app
+      become: yes
+      become_user: "{{ server_user }}"
       tags:
         - update_app
 
     - name: Ensure we're always in production rails environment
       lineinfile: dest=~/.profile line="export RAILS_ENV=production" regexp="^export RAILS_ENV"
-
-    - name: Configure a keybase for cookie signing
-      lineinfile: dest=~/.profile line="export SECRET_KEY_BASE={{ totransit_secret_key_base }}" regexp="^export SECRET_KEY_BASE"
+      become: yes
+      become_user: "{{ server_user }}"
 
     - name: "Install ruby required by the code (e.g.: .ruby_version)"
       shell: bash -lc "cd {{ totransit_app_dir }}; CONFIGURE_OPTS=\"--disable-install-rdoc\" yes \\n | rbenv install"
@@ -65,19 +61,17 @@
       changed_when: "'Installed' in ruby_install_result.stderr"
       failed_when: ruby_install_result.rc != 0 and not (ruby_install_result.stderr is search('^rbenv.*versions.*already exists$'))
       notify: restart app
+      become: yes
+      become_user: "{{ server_user }}"
       tags:
         - update_app
 
-    # Note to self: this doesn't work anymore on low-RAM VMsbecause we stopped
-    # vendorizing from development (which makes sense when we Dockerize it all).
-    # As a stepgap, I've manually applied
-    # https://www.digitalocean.com/community/tutorials/how-to-add-swap-on-ubuntu-14-04
-    # on the current droplet, but I should Ansible-ize that if I don't phase
-    # this file out.
     - name: Ensure we have all gem dependencies
       command: bash -lc "cd {{ totransit_app_dir }}; gem install bundler; bundle install --deployment"
       register: bundler
       changed_when: '"Installing" in bundler.stdout'
+      become: yes
+      become_user: "{{ server_user }}"
       tags:
         - update_app
 
@@ -88,20 +82,28 @@
 
     - name: Initialize database
       command: bash -lc "cd {{ totransit_app_dir }}; bundle exec rake db:create"
+      become: yes
+      become_user: "{{ server_user }}"
 
     - name: Migrate database
       command: bash -lc "cd {{ totransit_app_dir }}; bundle exec rake db:migrate"
+      become: yes
+      become_user: "{{ server_user }}"
       tags:
         - update_app
 
     - name: Add crontab tasks from whenever
       command: bash -lc "cd {{ totransit_app_dir }}; bundle exec whenever -i"
       notify: restart app
+      become: yes
+      become_user: "{{ server_user }}"
       tags:
         - update_app
 
     - name: Do a first load of the ttc data
       command: bash -lc "cd {{ totransit_app_dir }}; DISABLE_DATABASE_ENVIRONMENT_CHECK=1 bundle exec rake db:reset ttc:crawl"
       notify: restart app
+      become: yes
+      become_user: "{{ server_user }}"
       tags:
         - load_ttc_data

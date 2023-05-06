@@ -1,5 +1,9 @@
 ---
 
+# See: https://github.com/georchestra/ansible/issues/55#issuecomment-588313638
+- name: Ensure setfacl is present (so "become_user:" in playbooks works for less privileged ones)
+  apt: name=acl state=present
+
 - name: Install unattended upgrades package and dependencies.
   apt: pkg={{ packages }} state=present
   vars:

@@ -12,11 +12,15 @@
 
 - name: Avoid documentation and other slow stuff on gem (bundle) install
   template: src=.gemrc.j2 dest=~{{ ruby_user }}/.gemrc mode=700 owner={{ ruby_user }}
+  become: true
+  become_user: "{{ ruby_user }}"
 
 - name: Install rbenv
   git: repo=https://github.com/sstephenson/rbenv.git
        dest=~{{ ruby_user }}/.rbenv
        accept_hostkey=true
+  become: true
+  become_user: "{{ ruby_user }}"
 
 - name: Install rbenv system-wide bash file
   become: true
@@ -24,20 +28,48 @@
 
 - name: Create plugin directory
   file: path=~{{ ruby_user }}/.rbenv/plugins/ owner={{ ruby_user }} group={{ ruby_user }} mode=0755 state=directory
+  become: true
 
 - name: Install ruby-build
   git: repo=https://github.com/sstephenson/ruby-build.git dest=~{{ ruby_user }}/.rbenv/plugins/ruby-build accept_hostkey=true
+  become: true
+  become_user: "{{ ruby_user }}"
 
 - name: Check if required ruby is already installed
   command: bash -lc "rbenv versions | grep -q {{ ruby_version }}"
   when: ruby_version is defined
   ignore_errors: yes
   register: ruby_version_check
+  become: true
+  become_user: "{{ ruby_user }}"
 
 - name: Pre-install ruby
   command: bash -lc "rbenv install {{ ruby_version }}"
   when: ruby_version is defined and ruby_version_check.rc == 1
+  become: true
+  become_user: "{{ ruby_user }}"
 
 - name: Install a known bundler (so it manages other dependencies)
   command: bash -lc "rbenv shell {{ ruby_version }}; gem install bundler --version {{ bundler_version }}"
   when: ruby_version is defined and bundler_version is defined
+  become: true
+  become_user: "{{ ruby_user }}"
+
+- name: Find out if we have a Rails secrets keybase set up
+  command:
+    cmd: bash -lc 'grep "^export SECRET_KEY_BASE=.*$" ~{{ ruby_user }}/.profile; (exit 0)'
+  register: secret_key_base_export
+  changed_when: false
+  become: true
+  become_user: "{{ ruby_user }}"
+
+# This will discard all sessions (and any other Rails secrets) if we change/rebuild servers
+# Totally fine for my apps that barely keep any non-ephemerous state, but otherwise we
+# should retrieve from a vault instead
+- name: Configure the Rails secrets keybase with a random 64-byte hex value (only if one isn't already set up)
+  lineinfile:
+    dest: ~/.profile
+    line: "export SECRET_KEY_BASE={{ query('community.general.random_string', override_all='0123456789ABCDEF', length=128) | first }}"
+  when: secret_key_base_export.stdout | length == 0
+  become: true
+  become_user: "{{ ruby_user }}"
