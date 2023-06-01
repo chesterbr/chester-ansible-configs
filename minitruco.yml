@@ -3,8 +3,8 @@
   remote_user: "{{ admin_user }}"
 
   handlers:
-    - name: reload supervisor
-      shell: "supervisorctl reload"
+    - name: reload supervisor # without restarting other supervised apps
+      shell: "supervisorctl update; supervisorctl reread"
       become: yes
 
     - name: restart app

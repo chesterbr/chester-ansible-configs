@@ -44,10 +44,6 @@
           - makepasswd
           - supervisor
 
-    - name: "Auto-start supervisord on boot (temp fix for Ubuntu 16.04 bug: https://bugs.launchpad.net/ubuntu/+source/supervisor/+bug/1594740)"
-      shell: "systemctl enable supervisor; systemctl start supervisor"
-      become: yes
-
     - name: Add cruzalinhas upstream to server config
       become: yes
       lineinfile: dest=/etc/nginx/sites-enabled/cruzalinhas.com insertbefore="BOF" line="upstream cruzalinhas_rails { server 127.0.0.1:3000; }"
@@ -65,9 +61,6 @@
 
     - name: Ensure we're always in production rails environment
       lineinfile: dest=~/.profile line="export RAILS_ENV=production" regexp="^export RAILS_ENV"
-
-    - name: Configure a keybase for cookie signing
-      lineinfile: dest=~/.profile line="export SECRET_KEY_BASE={{ cruzalinhas_secret_key_base }}" regexp="^export SECRET_KEY_BASE"
 
     - name: "Install ruby required by the code (e.g.: .ruby_version)"
       shell: bash -lc "cd {{ cruzalinhas_checkout_dir }}; CONFIGURE_OPTS=\"--disable-install-rdoc\" yes \\n | rbenv install"
