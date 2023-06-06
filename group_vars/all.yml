@@ -28,5 +28,4 @@ totransit_checkout_dir: /home/server/totransit/source
 totransit_app_dir: /home/server/totransit/source/server
 
 # Minitruco (server)
-minitruco_checkout_dir: /home/chesterbr/minitruco/source
-minitruco_app_dir: /home/server/minitruco
+minitruco_checkout_dir: /home/server/minitruco/source

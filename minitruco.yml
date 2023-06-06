@@ -29,25 +29,17 @@
            dest={{ minitruco_checkout_dir }}
            version=main
       notify: restart app
+      become: yes
+      become_user: "{{ server_user }}"
       tags:
         - update_app
 
-    - name: Ensures application directory exists
-      file:
-        path: "{{ minitruco_app_dir }}"
-        state: directory
-        owner: "{{ server_user }}"
-        group: "{{ server_user }}"
+    - name: Build the .jar
+      shell : ./gradlew --no-daemon --settings-file server-only-gradle-settings build
+      args:
+        chdir: "{{ minitruco_checkout_dir }}"
       become: yes
-
-    - name: Copy the server JAR with proper permissions
-      copy:
-        remote_src: yes
-        src: "{{ minitruco_checkout_dir }}/server/deploy/server.jar"
-        dest: "{{ minitruco_app_dir }}/server.jar"
-        owner: "{{ server_user }}"
-        group: "{{ server_user }}"
-      become: yes
+      become_user: "{{ server_user }}"
       notify: restart app
       tags:
         - update_app
