@@ -20,8 +20,8 @@ nginx_sites:
       return: 444
 
 # Cruzalinhas options
-cruzalinhas_checkout_dir: /home/chesterbr/cruzalinhas/source
-sptrans_gtfs_filename: '/home/chesterbr/cruzalinhas/source/public/gtfs-sptrans.zip'
+cruzalinhas_checkout_dir: /home/server/cruzalinhas/source
+sptrans_gtfs_filename: '/home/server/cruzalinhas/source/public/gtfs-sptrans.zip'
 
 # Toronto Transit for Pebble options
 totransit_checkout_dir: /home/server/totransit/source
