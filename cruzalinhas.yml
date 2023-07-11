@@ -56,11 +56,15 @@
            dest={{ cruzalinhas_checkout_dir }}
            version=main
       notify: restart app
+      become: yes
+      become_user: "{{ server_user }}"
       tags:
         - update_app
 
     - name: Ensure we're always in production rails environment
       lineinfile: dest=~/.profile line="export RAILS_ENV=production" regexp="^export RAILS_ENV"
+      become: yes
+      become_user: "{{ server_user }}"
 
     - name: "Install ruby required by the code (e.g.: .ruby_version)"
       shell: bash -lc "cd {{ cruzalinhas_checkout_dir }}; CONFIGURE_OPTS=\"--disable-install-rdoc\" yes \\n | rbenv install"
@@ -68,6 +72,8 @@
       changed_when: "'Installed' in ruby_install_result.stderr"
       failed_when: ruby_install_result.rc != 0 and not (ruby_install_result.stderr is search('^rbenv.*versions.*already exists$'))
       notify: restart app
+      become: yes
+      become_user: "{{ server_user }}"
       tags:
         - update_app
 
@@ -75,6 +81,8 @@
       command: bash -lc "cd {{ cruzalinhas_checkout_dir }}; gem install bundle; bundle install"
       register: bundler
       changed_when: '"Installing" in bundler.stdout'
+      become: yes
+      become_user: "{{ server_user }}"
       tags:
         - update_app
 
@@ -86,8 +94,10 @@
     - name: Download and update SPTrans data
       command: bash -lc "cd {{ cruzalinhas_checkout_dir }}; DISABLE_DATABASE_ENVIRONMENT_CHECK=1 bundle exec rake sptrans:import"
       notify: restart app
+      become: yes
+      become_user: "{{ server_user }}"
       tags:
         - update_sptrans_data
 
-# TODO:
-# config crontab with download & update sptrans
+# # TODO:
+# # config crontab with download & update sptrans

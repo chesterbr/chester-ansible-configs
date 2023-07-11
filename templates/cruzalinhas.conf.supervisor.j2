@@ -1,2 +1,2 @@
 [program:cruzalinhas]
-command=su chester -lc "cd {{ cruzalinhas_checkout_dir }}; bin/rails server"
+command=su {{ server_user }} -lc "cd {{ cruzalinhas_checkout_dir }}; bin/rails server"
