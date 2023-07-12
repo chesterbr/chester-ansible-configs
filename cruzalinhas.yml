@@ -13,7 +13,6 @@
 
   roles:
     - role: chesterbr.vault
-      tags: foo
     - role: chesterbr.nginx
       nginx_sites:
         - server:
@@ -26,7 +25,7 @@
             server_name: www.cruzalinhas.com www.cruzalinhas.com.br cruzalinhas.com.br
             return: 301 $scheme://cruzalinhas.com$request_uri
     - role: chesterbr.ruby
-      ruby_user: "{{ admin_user }}"
+      ruby_user: "{{ server_user }}"
 
   tasks:
     - name: Install prereq packages
