@@ -2,13 +2,14 @@
 - hosts: production
   remote_user: "{{ admin_user }}"
 
+  # Notice that just rebuilidng the jar from latest sources is enough for the server to be softly
+  # redeployed with minimal downtime (<5s)
+  #
+  # see https://github.com/chesterbr/minitruco-android/launcher.sh
+
   handlers:
     - name: reload supervisor # without restarting other supervised apps
       shell: "supervisorctl update; supervisorctl reread"
-      become: yes
-
-    - name: restart app
-      shell: "supervisorctl restart minitruco"
       become: yes
 
   roles:
@@ -22,29 +23,32 @@
           - git
           - default-jdk
           - supervisor
+          - inotify-tools # Used by launcher.sh
+      tags:
+        - configure_supervisor
+
+    - name: Configure app to run under supervisor (from source dir)
+      template: src=templates/minitruco.conf.supervisor.j2 dest=/etc/supervisor/conf.d/minitruco.conf
+      become: yes
+      notify: reload supervisor
+      tags:
+        - configure_supervisor
 
     - name: Ensure code repository is at latest version
       git: repo=https://github.com/chesterbr/minitruco-android.git
            accept_hostkey=true
            dest={{ minitruco_checkout_dir }}
            version=main
-      notify: restart app
       become: yes
       become_user: "{{ server_user }}"
       tags:
         - update_app
 
     - name: Build the .jar
-      shell : ./gradlew --no-daemon --settings-file server-only-gradle-settings build
+      shell : ./gradlew --no-daemon -x test --settings-file server-only-gradle-settings build
       args:
         chdir: "{{ minitruco_checkout_dir }}"
       become: yes
       become_user: "{{ server_user }}"
-      notify: restart app
       tags:
         - update_app
-
-    - name: Configure app to run under supervisor (from source dir)
-      template: src=templates/minitruco.conf.supervisor.j2 dest=/etc/supervisor/conf.d/minitruco.conf
-      become: yes
-      notify: reload supervisor
