@@ -18,10 +18,6 @@ If you want to learn Ansible, I strongly recommend [Jeff Geerling][11]'s [Ansibl
 
 An app that allows quickly finding public transportation routes in São Paulo. See [source code][1] or [website][3] for details. It shares she same nginx with the Toronto Transit (below).
 
-### Home automation Raspberry Pi
-
-I used my RPi to add voice control to my [lights](https://chester.me/archives/2017/12/controlling-rf-outlets-from-a-raspberry-pi/) and [TV](https://chester.me/archives/2017/12/voice-control-for-a-non-smart-tv-with-google-home-raspberry-pi-lirc-nginx-lua-ifttt/). I added plabooks to [provision](rpi_provisioning.yml) it and [configure the apps](rpi.yml), so I can tinker with confidence.
-
 ### Toronto Transit for Pebble
 
 Back-end for a Pebble app that finds the nearest bus/streetcar stops and shows how long it will take for the next vehicles to arrive.
@@ -29,6 +25,12 @@ Back-end for a Pebble app that finds the nearest bus/streetcar stops and shows h
 ### miniTruco server
 
 This is a simple Java app that listens on the 6912 port, handling communication between [miniTruco][2] clients and spawning bot players to fill incomplete tables (a miniTruco table requires 4 players).
+
+## Older scripts (not actively maintained)
+
+### Home automation Raspberry Pi
+
+Before switching to [Home Assistant](https://www.home-assistant.io/), I manually configured my RPi to add voice control to my [lights](https://chester.me/archives/2017/12/controlling-rf-outlets-from-a-raspberry-pi/) and [TV](https://chester.me/archives/2017/12/voice-control-for-a-non-smart-tv-with-google-home-raspberry-pi-lirc-nginx-lua-ifttt/), among other home automation tasks. For that I had plabooks to [provision](rpi_provisioning.yml) it and [configure the apps](rpi.yml), so I could tinker with confidence.
 
 ## Quick setup (Mac OS X)
 
