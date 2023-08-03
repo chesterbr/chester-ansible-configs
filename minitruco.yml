@@ -21,7 +21,7 @@
       vars:
         packages:
           - git
-          - default-jdk
+          - openjdk-19-jdk
           - supervisor
           - inotify-tools # Used by launcher.sh
       tags:
