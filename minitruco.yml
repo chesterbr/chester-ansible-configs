@@ -5,7 +5,7 @@
   # Notice that just rebuilidng the jar from latest sources is enough for the server to be softly
   # redeployed with minimal downtime (<5s)
   #
-  # see https://github.com/chesterbr/minitruco-android/launcher.sh
+  # see https://github.com/chesterbr/minitruco-android/blob/main/launcher.sh
 
   handlers:
     - name: reload supervisor # without restarting other supervised apps
