@@ -56,7 +56,7 @@
         - update_app
 
     - name: Build the .jar
-      shell : ./gradlew --no-daemon -x test --settings-file server-only-gradle-settings build
+      shell : ./gradlew --priority low --no-daemon -x test --settings-file server-only-gradle-settings build
       args:
         chdir: "{{ minitruco_checkout_dir }}"
       become: yes
