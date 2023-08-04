@@ -34,6 +34,17 @@
       tags:
         - configure_supervisor
 
+    - name: Configure ufw (firewall) to allow incoming game connections, limiting max number
+      become: true
+      ufw:
+        rule: limit
+        proto: tcp
+        port: 6912
+        src: any
+        direction: in
+      tags:
+        - firewall
+
     - name: Ensure code repository is at latest version
       git: repo=https://github.com/chesterbr/minitruco-android.git
            accept_hostkey=true

@@ -23,14 +23,13 @@
     - 20auto-upgrades
     - 50unattended-upgrades
 
-- name: Configure ufw (firewall) rules
+- name: Configure ufw (firewall) to allow specific ports
   become: yes
   ufw: rule=allow port={{ item }}
   with_items:
     - 22
     - 80
     - 443
-    - 6912
   tags:
     - firewall
 
