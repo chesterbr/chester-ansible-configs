@@ -1,6 +1,6 @@
 [program:minitruco]
 user={{ server_user }}
 command={{ minitruco_checkout_dir }}/launcher.sh {{ minitruco_checkout_dir }}/server/build/libs/server.jar
-stdout_logfile=/var/log/supervisor/minitruco.log
+stdout_logfile={{ minitruco_log_file }}
 redirect_stderr=true
 stdout_logfile_maxbytes=0
