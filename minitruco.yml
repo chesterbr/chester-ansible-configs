@@ -63,3 +63,12 @@
       become_user: "{{ server_user }}"
       tags:
         - update_app
+
+    - name: Touch the .jar to ensure we get a soft reload even if nothing has changed
+      become: yes
+      become_user: "{{ server_user }}"
+      file:
+        path: "{{ minitruco_checkout_dir }}/server/build/libs/server.jar"
+        state: touch
+      tags:
+        - update_app
