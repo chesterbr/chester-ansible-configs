@@ -23,6 +23,33 @@
     - 20auto-upgrades
     - 50unattended-upgrades
 
+- name: Ensure maintenance scripts directory exists
+  become: true
+  file:
+    path: /opt/scripts
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+
+- name: Copy script that will soft shutdown all services and reboot if a reboot is required
+  become: true
+  template:
+    src: "../templates/reboot_if_required.sh"
+    dest: "/opt/scripts/reboot_if_required.sh"
+    owner: root
+    group: root
+    mode: 0755
+
+- name: Do the updates reboot (if required) every day at 5AM UTC (the server expected timezone), so it reboots at 2AM or 3AM in Brazil, and midnight or 1AM in Toronto
+  become: true
+  cron:
+    name: "Run reboot_if_required.sh"
+    minute: 0
+    hour: 5
+    job: "/opt/scripts/reboot_if_required.sh"
+    user: root
+
 - name: Configure ufw (firewall) to allow specific ports
   become: yes
   ufw: rule=allow port={{ item }}
