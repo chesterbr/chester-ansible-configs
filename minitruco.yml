@@ -34,6 +34,15 @@
       tags:
         - configure_supervisor
 
+    - name: Configure logrotate to rotate logs, see file for retention details
+      become: yes
+      template:
+        src: templates/minitruco_logrotate.conf.j2
+        dest: /etc/logrotate.d/minitruco_logrotate.conf
+        owner:  "root"
+        group: "root"
+        mode: '0644'
+
     - name: Configure ufw (firewall) to allow incoming game connections, limiting max number
       become: true
       ufw:
