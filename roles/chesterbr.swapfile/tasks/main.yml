@@ -1,0 +1,30 @@
+---
+
+- name: Create swap file
+  command: fallocate -l 2G /swapfile
+  become: true
+  ignore_errors: true  # Ignore errors if the swap file already exists
+  tags: swapfile
+
+- name: Set swap file permissions
+  command: chmod 600 /swapfile
+  become: true
+  tags: swapfile
+
+- name: Set swap file as swap space
+  command: mkswap /swapfile
+  become: true
+  tags: swapfile
+
+- name: Enable the swap file
+  command: swapon /swapfile
+  become: true
+  tags: swapfile
+
+- name: Add swap file entry to /etc/fstab
+  lineinfile:
+    path: /etc/fstab
+    line: '/swapfile none swap sw 0 0'
+    state: present
+  become: true
+  tags: swapfile

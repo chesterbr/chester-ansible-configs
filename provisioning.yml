@@ -12,3 +12,4 @@
   roles:
     - role: chesterbr.user_setup
     - role: chesterbr.security
+    - role: chesterbr.swapfile
