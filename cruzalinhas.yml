@@ -89,6 +89,8 @@
       template: src=templates/cruzalinhas.conf.supervisor.j2 dest=/etc/supervisor/conf.d/cruzalinhas.conf
       become: yes
       notify: reload supervisor
+      tags:
+        - configure_supervisor
 
     - name: Download and update SPTrans data
       command: bash -lc "cd {{ cruzalinhas_checkout_dir }}; DISABLE_DATABASE_ENVIRONMENT_CHECK=1 bundle exec rake sptrans:import"

@@ -79,6 +79,8 @@
       template: src=templates/totransit.conf.supervisor.j2 dest=/etc/supervisor/conf.d/totransit.conf
       become: yes
       notify: reload supervisor
+      tags:
+        - configure_supervisor
 
     - name: Initialize database
       command: bash -lc "cd {{ totransit_app_dir }}; bundle exec rake db:create"
