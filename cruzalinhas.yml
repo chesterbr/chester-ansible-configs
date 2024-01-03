@@ -16,14 +16,14 @@
     - role: chesterbr.nginx
       nginx_sites:
         - server:
-            file_name: cruzalinhas.com
+            file_name: cruzalinhas.chester.me
             root: "{{ cruzalinhas_checkout_dir }}/public"
-            server_name: cruzalinhas.com
+            server_name: cruzalinhas.chester.me
             location1: { name: '~ .*', proxy_pass: 'http://cruzalinhas_rails' }
         - server:
             file_name: redirects.cruzalinhas.com
-            server_name: www.cruzalinhas.com www.cruzalinhas.com.br cruzalinhas.com.br
-            return: 301 $scheme://cruzalinhas.com$request_uri
+            server_name: cruzalinhas.com www.cruzalinhas.com www.cruzalinhas.com.br cruzalinhas.com.br
+            return: 301 $scheme://cruzalinhas.chester.me$request_uri
     - role: chesterbr.ruby
       ruby_user: "{{ server_user }}"
 
@@ -45,7 +45,7 @@
 
     - name: Add cruzalinhas upstream to server config
       become: yes
-      lineinfile: dest=/etc/nginx/sites-enabled/cruzalinhas.com insertbefore="BOF" line="upstream cruzalinhas_rails { server 127.0.0.1:3000; }"
+      lineinfile: dest=/etc/nginx/sites-enabled/cruzalinhas.chester.me insertbefore="BOF" line="upstream cruzalinhas_rails { server 127.0.0.1:3000; }"
       notify:
        - reload nginx
 

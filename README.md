@@ -14,7 +14,7 @@ If you want to learn Ansible, I strongly recommend [Jeff Geerling][11]'s [Ansibl
 
 ## What does it configure?
 
-### cruzalinhas.com
+### cruzalinhas
 
 An app that allows quickly finding public transportation routes in São Paulo. See [source code][1] or [website][3] for details. It shares she same nginx with the Toronto Transit (below).
 
@@ -78,7 +78,7 @@ Those are tagged on the playbooks, please check them for such tags and add to `a
 
 [1]: https://github.com/chesterbr/cruzalinhas
 [2]: https://github.com/chesterbr/minitruco-android
-[3]: http://cruzalinhas.com
+[3]: http://cruzalinhas.chester.me
 [4]: http://chester.me
 [5]: https://github.com/chesterbr/octopress
 [6]: mailto:cd@pobox.com?subject=chester-website-configs
