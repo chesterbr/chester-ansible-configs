@@ -16,7 +16,7 @@ If you want to learn Ansible, I strongly recommend [Jeff Geerling][11]'s [Ansibl
 
 ### cruzalinhas
 
-An app that allows quickly finding public transportation routes in São Paulo. See [source code][1] or [website][3] for details. It shares she same nginx with the Toronto Transit (below).
+An app that allows quickly finding public transportation routes in São Paulo. See [source code][1] or [website][3] for details. It shares the same nginx with the Toronto Transit (below).
 
 ### Toronto Transit for Pebble
 
