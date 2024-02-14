@@ -1,0 +1,72 @@
+---
+- hosts: production
+  remote_user: "{{ admin_user }}"
+
+  handlers:
+    - name: reload supervisor
+      shell: "service supervisor restart; supervisorctl reload"
+      become: yes
+
+    - name: restart app
+      shell: "supervisorctl restart staticman"
+      become: yes
+
+  roles:
+    - role: chesterbr.vault
+    - role: chesterbr.nginx
+      nginx_sites:
+        - server:
+            file_name: staticman.chester.me
+            root: "{{ staticman_checkout_dir }}/public"
+            server_name: staticman.chester.me
+            location1: { name: '~ .*', proxy_pass: 'http://staticman_node' }
+
+  tasks:
+    - name: Install prereq packages
+      apt: name={{ packages }} state=present
+      become: yes
+      vars:
+        packages:
+          - git
+          - nodejs
+          - npm
+          - supervisor
+
+    - name: Add staticman upstream to server config
+      become: yes
+      lineinfile: dest=/etc/nginx/sites-enabled/staticman.chester.me insertbefore="BOF" line="upstream staticman_node { server 127.0.0.1:3002; }"
+      notify:
+       - reload nginx
+
+    - name: Ensure code repository is at latest version
+      git: repo=https://github.com/chesterbr/staticman
+           accept_hostkey=true
+           dest={{ staticman_checkout_dir }}
+           version=master
+      notify: restart app
+      become: yes
+      become_user: "{{ server_user }}"
+      tags:
+        - update_app
+
+    - name: Ensure we have all node dependencies for staticman
+      command: bash -lc "cd {{ staticman_checkout_dir }}; npm install"
+      changed_when: false
+      become: yes
+      become_user: "{{ server_user }}"
+      tags:
+        - update_app
+
+    - name: Copies staticman infrastructure configuration
+      template: src=templates/staticman_infrastructure_config.json.j2 dest={{ staticman_checkout_dir }}/config.production.json
+      become: yes
+      become_user: "{{ server_user }}"
+      notify: reload supervisor
+
+    - name: Configures staticman to run under supervisor (from source dir)
+      template: src=templates/staticman.conf.supervisor.j2 dest=/etc/supervisor/conf.d/staticman.conf
+      become: yes
+      notify: reload supervisor
+      tags:
+        - configure_supervisor
+
