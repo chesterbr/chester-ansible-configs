@@ -19,7 +19,18 @@
             file_name: staticman.chester.me
             root: "{{ staticman_checkout_dir }}/public"
             server_name: staticman.chester.me
+            https_server_name: staticman.chester.me
             location1: { name: '~ .*', proxy_pass: 'http://staticman_node' }
+    - role: geerlingguy.certbot
+      tags: certbot
+      become: yes
+      certbot_create_if_missing: true
+      certbot_auto_renew: true
+      certbot_auto_renew_user: root
+      certbot_admin_email: "{{ admin_email }}"
+      certbot_certs:
+        - domains:
+            - staticman.chester.me
 
   tasks:
     - name: Install prereq packages
