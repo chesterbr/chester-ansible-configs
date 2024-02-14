@@ -1,0 +1,5 @@
+[program:staticman]
+command=sudo -u {{ server_user }} bash -lc "cd {{ staticman_checkout_dir }}; NODE_ENV=production npm start"
+stopasgroup=true
+killasgroup=true
+stopsignal=KILL

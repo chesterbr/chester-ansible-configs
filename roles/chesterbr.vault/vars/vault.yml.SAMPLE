@@ -7,3 +7,5 @@
 sptrans_username: 'username you created on http://www.sptrans.com.br/desenvolvedores/'
 sptrans_password: 'password for username above'
 cruzalinhas_secret_key_base: 'generate one with rake secret or your favorite method'
+staticman_github_app_private_key: 'see staticman docs; comes from the github app'
+staticman_rsa_private_key: 'see staticman docs; can gen with oepnssl genrsa'

@@ -30,3 +30,6 @@ totransit_app_dir: /home/server/totransit/source/server
 # Minitruco (server)
 minitruco_checkout_dir: /home/server/minitruco/source
 minitruco_log_file: /var/log/supervisor/minitruco.log
+
+# Staticman (comments for chester.me)
+staticman_checkout_dir: /home/server/staticman/source
