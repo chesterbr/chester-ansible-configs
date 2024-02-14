@@ -26,6 +26,10 @@ Back-end for a Pebble app that finds the nearest bus/streetcar stops and shows h
 
 This is a simple Java app that listens on the 6912 port, handling communication between [miniTruco][2] clients and spawning bot players to fill incomplete tables (a miniTruco table requires 4 players).
 
+### staticman
+
+A fork of [Staticman](https://staticman.net/) that I use to handle comments on my [blog][4]. It's a Node.js app that listens on port 3002.
+
 ## Older scripts (not actively maintained)
 
 ### Home automation Raspberry Pi
