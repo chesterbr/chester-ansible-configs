@@ -30,11 +30,11 @@ This is a simple Java app that listens on the 6912 port, handling communication 
 
 A fork of [Staticman](https://staticman.net/) that I use to handle comments on my [blog][4]. It's a Node.js app that listens on port 3002.
 
-## Older scripts (not actively maintained)
+## Older scripts (not on main branch anymore)
 
 ### Home automation Raspberry Pi
 
-Before switching to [Home Assistant](https://www.home-assistant.io/), I manually configured my RPi to add voice control to my [lights](https://chester.me/archives/2017/12/controlling-rf-outlets-from-a-raspberry-pi/) and [TV](https://chester.me/archives/2017/12/voice-control-for-a-non-smart-tv-with-google-home-raspberry-pi-lirc-nginx-lua-ifttt/), among other home automation tasks. For that I had plabooks to [provision](rpi_provisioning.yml) it and [configure the apps](rpi.yml), so I could tinker with confidence.
+Before switching to [Home Assistant](https://www.home-assistant.io/), I manually configured my RPi to add voice control to my [lights](https://chester.me/archives/2017/12/controlling-rf-outlets-from-a-raspberry-pi/) and [TV](https://chester.me/archives/2017/12/voice-control-for-a-non-smart-tv-with-google-home-raspberry-pi-lirc-nginx-lua-ifttt/), among other home automation tasks. For that I had plabooks to [provision](https://github.com/chesterbr/chester-ansible-configs/blob/36c13da4df04f51c54cab9d2d7b0e228300f8843/rpi_provisioning.yml) it and [configure the apps](https://github.com/chesterbr/chester-ansible-configs/blob/36c13da4df04f51c54cab9d2d7b0e228300f8843/rpi.yml), so I could tinker with confidence.
 
 ## Quick setup (Mac OS X)
 
