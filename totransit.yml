@@ -57,7 +57,7 @@
       become_user: "{{ server_user }}"
 
     - name: "Install ruby required by the code (e.g.: .ruby_version)"
-      shell: bash -lc "cd {{ totransit_app_dir }}; CONFIGURE_OPTS=\"--disable-install-rdoc\" yes \\n | rbenv install"
+      shell: bash -lc "cd {{ totransit_app_dir }}; CONFIGURE_OPTS=\"--disable-install-rdoc\" yes \\n | rbenv install --skip-existing"
       register: ruby_install_result
       changed_when: "'Installed' in ruby_install_result.stderr"
       failed_when: ruby_install_result.rc != 0 and not (ruby_install_result.stderr is search('^rbenv.*versions.*already exists$'))
