@@ -83,10 +83,3 @@
 
 - name: Ensure fail2ban is running and enabled on boot.
   service: name=fail2ban state=started enabled=yes
-
-# This is the last thing we should do - after that, ssh as root
-# won't be accepted. It must use raw because otherwise Ansible
-# does one last ssh, fails and fail2ban locks us out.
-- name: restart sshd to make new configuration effective
-  raw: "systemctl restart sshd"
-
