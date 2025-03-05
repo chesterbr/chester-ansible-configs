@@ -37,7 +37,6 @@
           - libsqlite3-dev
           - xvfb
           - firefox
-          - python-pip
           - default-jdk
           - nodejs
           - makepasswd
