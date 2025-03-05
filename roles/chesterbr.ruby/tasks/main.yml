@@ -7,6 +7,8 @@
       - build-essential
       - libssl-dev
       - libreadline-dev
+      - libffi-dev
+      - libyaml-dev
       - zlib1g-dev
       - git
 
