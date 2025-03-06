@@ -47,7 +47,7 @@ brew cask install virtualbox vagrant
 vagrant up
 ```
 
-To install one (or more) of the services on the virtual machine, run its playbook:
+To install one (or more) of the services on the virtual machine, add the proper IP in `hosts`, then run the playbook:
 
 ```
 ansible-playbook <playbook name>.yml -i hosts,
@@ -60,7 +60,7 @@ Run this script to enable development sites (it redirects ports - until reboot -
 sudo ./config-dev-environment
 ```
 
-Now you can open, say, [http://dev.chester.me](http://dev.chester.me).
+With that you can open, say, [http://dev.chester.me](http://dev.chester.me).
 
 ### Passwords vault
 
@@ -77,7 +77,7 @@ Once that is done, playbooks may be ran on the proper hosts. Currently I ran all
 Those are tagged on the playbooks, please check them for such tags and add to `ansible-playbook`. Examples:
 
 - To download new data from sptrans: `--tags update_sptrans_data`;
-- To deploy the latest version of cruzalinhas or toronto-transit-time: `--tags update_app`.
+- To deploy the latest version of cruzalinhas, minitruco or toronto-transit-time: `--tags update_app`.
 
 
 [1]: https://github.com/chesterbr/cruzalinhas
