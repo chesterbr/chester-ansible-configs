@@ -32,6 +32,7 @@
           - git
           - libsqlite3-dev
           - supervisor
+          - pkg-config
           - libyaml-dev # required by ruby psych gem
 
     - name: Add totransit upstream to server config
