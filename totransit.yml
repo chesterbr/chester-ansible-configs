@@ -21,7 +21,6 @@
             location1: { name: '~ .*', proxy_pass: 'http://totransit_rails' }
     - role: chesterbr.ruby
       ruby_user: "{{ server_user }}"
-      tags: update_ruby
 
   tasks:
     - name: Install prereq packages

@@ -26,7 +26,6 @@
             return: 301 $scheme://cruzalinhas.chester.me$request_uri
     - role: chesterbr.ruby
       ruby_user: "{{ server_user }}"
-      tags: update_ruby      
 
   tasks:
     - name: Install prereq packages
