@@ -13,3 +13,13 @@
     - role: chesterbr.user_setup
     - role: chesterbr.security
     - role: chesterbr.swapfile
+  tasks:
+    - name: Remove cloud-init (only needed for initial VM provisioning, causes unattended-upgrades noise)
+      become: yes
+      apt:
+        name: cloud-init
+        state: absent
+        purge: yes
+        force: yes
+      tags:
+        - remove_cloud_init
