@@ -12,6 +12,11 @@
       shell: "supervisorctl update; supervisorctl reread"
       become: yes
 
+    - name: reload ufw
+      become: true
+      ufw:
+        state: reloaded
+
   roles:
     - role: chesterbr.vault
   tasks:
@@ -43,14 +48,36 @@
         group: "root"
         mode: '0644'
 
-    - name: Configure ufw (firewall) to allow incoming game connections, limiting max number
+    - name: Configure ufw (firewall) to allow incoming game connections
+      become: true
+      ufw:
+        rule: allow
+        proto: tcp
+        port: "{{ minitruco_port }}"
+        src: any
+        direction: in
+      tags:
+        - firewall
+
+    - name: Remove old UFW limit rule for minitruco port (if present)
       become: true
       ufw:
         rule: limit
         proto: tcp
-        port: 6912
-        src: any
-        direction: in
+        port: "{{ minitruco_port }}"
+        delete: true
+      ignore_errors: true
+      tags:
+        - firewall
+
+    - name: Add custom rate limiting for minitruco in ufw before.rules
+      become: true
+      blockinfile:
+        path: /etc/ufw/before.rules
+        marker: "# {mark} ANSIBLE MANAGED - minitruco rate limiting"
+        insertbefore: "^COMMIT"
+        block: "{{ lookup('template', 'templates/ufw_before_rules_minitruco.j2') }}"
+      notify: reload ufw
       tags:
         - firewall
 

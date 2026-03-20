@@ -30,6 +30,9 @@ totransit_app_dir: /home/server/totransit/source/server
 # Minitruco (server)
 minitruco_checkout_dir: /home/server/minitruco/source
 minitruco_log_file: /var/log/supervisor/minitruco.log
+minitruco_port: 6912
+minitruco_rate_limit_max_per_period_from_same_ip: 20
+minitruco_rate_limit_period_in_seconds: 30
 
 # Staticman (comments for chester.me)
 staticman_checkout_dir: /home/server/staticman/source

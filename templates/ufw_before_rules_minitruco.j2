@@ -1,0 +1,9 @@
+# Custom rate limiting for minitruco (port {{ minitruco_port }})
+# Allows {{ minitruco_rate_limit_max_per_period_from_same_ip }} new connections
+# per {{ minitruco_rate_limit_period_in_seconds }}s from the same IP,
+# instead of UFW's hardcoded limit of 6 per 30s.
+:ufw-minitruco-limit - [0:0]
+-A ufw-before-input -p tcp --dport {{ minitruco_port }} -m state --state NEW -j ufw-minitruco-limit
+-A ufw-minitruco-limit -m recent --set --name minitruco
+-A ufw-minitruco-limit -m recent --update --seconds {{ minitruco_rate_limit_period_in_seconds }} --hitcount {{ minitruco_rate_limit_max_per_period_from_same_ip }} --name minitruco -j DROP
+-A ufw-minitruco-limit -j ACCEPT
