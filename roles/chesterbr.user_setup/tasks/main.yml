@@ -8,6 +8,10 @@
   authorized_key: user={{ admin_user }} key={{ admin_user_key }}
   tags: update_admin_keys
 
+- name: Ensure deploy key can log in for automated deployments
+  authorized_key: user={{ admin_user }} key="{{ admin_deploy_key }}"
+  tags: update_admin_keys
+
 - name: Ensure admin user is a passwordless sudoer
   lineinfile:
     dest: /etc/sudoers

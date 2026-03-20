@@ -3,6 +3,7 @@
 # support files if we deem so)
 admin_user: chesterbr
 admin_user_key: https://github.com/chesterbr.keys
+admin_deploy_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIH3mHqhrtpzxMYnVlYYLEpK2nqfbsZ3V4ea6QvyxInFu github-actions-deploy"
 admin_email: cd@pobox.com
 
 # User that will host and execute the server apps  (non-sudoer, can't log in)
