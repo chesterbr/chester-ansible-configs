@@ -20,10 +20,6 @@
             root: "{{ cruzalinhas_checkout_dir }}/public"
             server_name: cruzalinhas.chester.me
             location1: { name: '~ .*', proxy_pass: 'http://cruzalinhas_rails' }
-        - server:
-            file_name: redirects.cruzalinhas.com
-            server_name: cruzalinhas.com www.cruzalinhas.com www.cruzalinhas.com.br cruzalinhas.com.br
-            return: 301 $scheme://cruzalinhas.chester.me$request_uri
     - role: chesterbr.ruby
       ruby_user: "{{ server_user }}"
 
