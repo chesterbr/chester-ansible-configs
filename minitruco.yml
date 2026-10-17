@@ -86,13 +86,15 @@
            accept_hostkey=true
            dest={{ minitruco_checkout_dir }}
            version=main
+           force=yes # discards the settings.gradle swap done by the build task below
       become: yes
       become_user: "{{ server_user }}"
       tags:
         - update_app
 
     - name: Build the .jar
-      shell : ./gradlew --priority low --no-daemon -x test --settings-file server-only-gradle-settings build
+      # Gradle 9 dropped --settings-file, so we swap in the server-only settings (no Android module)
+      shell : cp server-only-gradle-settings settings.gradle && ./gradlew --priority low --no-daemon -x test build
       args:
         chdir: "{{ minitruco_checkout_dir }}"
       become: yes
