@@ -30,7 +30,7 @@ This is a simple Java app that listens on the 6912 port, handling communication 
 
 Everything runs on a single server: all playbooks target the `production` group in `hosts`, which currently has a single machine.
 
-- `hosts`: the Ansible inventory. The server is `prod.chester.me`, a DNS record used only to reach it (the apps have their own records, see below), so the GitHub Actions deploys of the apps follow it too. Keep `ansible_python_interpreter=/usr/bin/python3` on the host line (the default in `group_vars/all.yml` is stale).
+- `hosts`: the Ansible inventory. The server is `prod.chester.me`, a DNS record used only to reach it (the apps have their own records, see below), so the GitHub Actions deploys of the apps follow it too. The host line also sets `ansible_python_interpreter=/usr/bin/python3` (the same default as in `group_vars/all.yml`).
 - `group_vars/all.yml`: shared settings (admin and server users, checkout directories, miniTruco port and rate limits).
 - `provisioning.yml`: one-time base setup (admin user, ssh hardening, firewall, fail2ban, unattended upgrades, swap). Runs as `root`.
 - `cruzalinhas.yml`, `totransit.yml`, `minitruco.yml`: one playbook per app.

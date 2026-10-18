@@ -9,8 +9,8 @@ admin_email: cd@pobox.com
 # User that will host and execute the server apps  (non-sudoer, can't log in)
 server_user: server
 
-# Ansible needs to use Python 2.7
-ansible_python_interpreter: /usr/bin/python2.7
+# Python interpreter on the servers (it is also set on the host line in `hosts`)
+ansible_python_interpreter: /usr/bin/python3
 
 # Basic nginx configuration: disable default site, add chester.me and redirects
 nginx_sites:
