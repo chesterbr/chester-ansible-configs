@@ -23,6 +23,19 @@
     - 20auto-upgrades
     - 50unattended-upgrades
 
+- name: Keep needrestart from restarting supervisor (it takes the game servers down mid-match)
+  become: true
+  copy:
+    dest: /etc/needrestart/conf.d/supervisor.conf
+    owner: root
+    group: root
+    mode: 0644
+    content: |
+      # Managed by ansible. Restarting supervisor soft-shuts the miniTruco server
+      # down on every library upgrade; the apps pick up new libraries on the next
+      # deploy or reboot instead.
+      $nrconf{override_rc}{qr(^supervisor)} = 0;
+
 - name: Ensure maintenance scripts directory exists
   become: true
   file:
